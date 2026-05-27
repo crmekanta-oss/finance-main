@@ -65,25 +65,29 @@ export const initTeam = [
 ]
 
 // ── MARKETING DATA ──────────────────────────────────────────────────────
+// created_at dates are set relative to today (2026-05-27) so date filters work:
+//   Today  = 2026-05-27
+//   7 Days = 2026-05-20 to 2026-05-27
+//   30 Days= 2026-04-27 to 2026-05-27
 export const initGoogleAds = [
-  { id:1, campaign:'Brand Search',      type:'Search',  budget:35000, spend:35000, clicks:8200,  impressions:100000, conversions:120, revenue:456000, status:'Active' },
-  { id:2, campaign:'Product Keywords',  type:'Search',  budget:50000, spend:45000, clicks:12400, impressions:203000, conversions:140, revenue:560000, status:'Active' },
-  { id:3, campaign:'Display Retarget',  type:'Display', budget:30000, spend:25000, clicks:5800,  impressions:118000, conversions:54,  revenue:162000, status:'Paused' },
-  { id:4, campaign:'Shopping Ads',      type:'Shopping',budget:20000, spend:15000, clicks:1600,  impressions:29000,  conversions:26,  revenue:78000,  status:'Active' },
+  { id:1, campaign:'Brand Search',      type:'Search',  budget:35000, spend:35000, clicks:8200,  impressions:100000, conversions:120, revenue:456000, status:'Active', created_at:'2026-05-27T09:00:00.000Z' },
+  { id:2, campaign:'Product Keywords',  type:'Search',  budget:50000, spend:45000, clicks:12400, impressions:203000, conversions:140, revenue:560000, status:'Active', created_at:'2026-05-22T10:00:00.000Z' },
+  { id:3, campaign:'Display Retarget',  type:'Display', budget:30000, spend:25000, clicks:5800,  impressions:118000, conversions:54,  revenue:162000, status:'Paused', created_at:'2026-05-10T11:00:00.000Z' },
+  { id:4, campaign:'Shopping Ads',      type:'Shopping',budget:20000, spend:15000, clicks:1600,  impressions:29000,  conversions:26,  revenue:78000,  status:'Active', created_at:'2026-04-20T08:00:00.000Z' },
 ]
 
 export const initMetaAds = [
-  { id:1, campaign:'Facebook Feed',      type:'Feed',     budget:35000, spend:30000, reach:120000, impressions:180000, conversions:110, revenue:330000, status:'Active' },
-  { id:2, campaign:'Instagram Stories',  type:'Stories',  budget:30000, spend:25000, reach:98000,  impressions:140000, conversions:85,  revenue:255000, status:'Active' },
-  { id:3, campaign:'Reels Boost',        type:'Reels',    budget:20000, spend:18000, reach:92000,  impressions:128000, conversions:62,  revenue:186000, status:'Active' },
-  { id:4, campaign:'Lookalike Audience', type:'Audience', budget:15000, spend:12000, reach:50000,  impressions:72000,  conversions:33,  revenue:99000,  status:'Paused' },
+  { id:1, campaign:'Facebook Feed',      type:'Feed',     budget:35000, spend:30000, reach:120000, impressions:180000, conversions:110, revenue:330000, status:'Active', created_at:'2026-05-27T09:30:00.000Z' },
+  { id:2, campaign:'Instagram Stories',  type:'Stories',  budget:30000, spend:25000, reach:98000,  impressions:140000, conversions:85,  revenue:255000, status:'Active', created_at:'2026-05-24T10:00:00.000Z' },
+  { id:3, campaign:'Reels Boost',        type:'Reels',    budget:20000, spend:18000, reach:92000,  impressions:128000, conversions:62,  revenue:186000, status:'Active', created_at:'2026-05-08T11:00:00.000Z' },
+  { id:4, campaign:'Lookalike Audience', type:'Audience', budget:15000, spend:12000, reach:50000,  impressions:72000,  conversions:33,  revenue:99000,  status:'Paused', created_at:'2026-04-18T08:00:00.000Z' },
 ]
 
 export const initCommunicationAds = [
-  { id:1, campaign:'Eid Collection Blast', type:'WhatsApp', budget:10000, spend:7500, reach:12000, conversions:320, revenue:96000, status:'Completed' },
-  { id:2, campaign:'New Arrivals SMS',     type:'SMS',      budget:5000,  spend:4200, reach:18000, conversions:180, revenue:54000, status:'Active' },
-  { id:3, campaign:'Monthly Newsletter',   type:'Email',    budget:4000,  spend:2800, reach:9500,  conversions:95,  revenue:28500, status:'Active' },
-  { id:4, campaign:'Festival Offer Alert', type:'WhatsApp', budget:8000,  spend:5500, reach:10000, conversions:410, revenue:123000, status:'Active' },
+  { id:1, campaign:'Eid Collection Blast', type:'WhatsApp', budget:10000, spend:7500, reach:12000, conversions:320, revenue:96000,  status:'Completed', created_at:'2026-05-27T08:00:00.000Z' },
+  { id:2, campaign:'New Arrivals SMS',     type:'SMS',      budget:5000,  spend:4200, reach:18000, conversions:180, revenue:54000,  status:'Active',    created_at:'2026-05-23T09:00:00.000Z' },
+  { id:3, campaign:'Monthly Newsletter',   type:'Email',    budget:4000,  spend:2800, reach:9500,  conversions:95,  revenue:28500,  status:'Active',    created_at:'2026-05-14T10:00:00.000Z' },
+  { id:4, campaign:'Festival Offer Alert', type:'WhatsApp', budget:8000,  spend:5500, reach:10000, conversions:410, revenue:123000, status:'Active',    created_at:'2026-05-27T11:00:00.000Z' },
 ]
 
 // ── CEO DATA ─────────────────────────────────────────────────────────────
