@@ -81,9 +81,11 @@ export function useTable(tableName, initialData = []) {
     // Optimistic remove
     const previousRows = rows
     setRows(prev => prev.filter(r => r.id !== id))
-    
-    if (!isConfigured || typeof id === 'number') return
-    
+
+    // Only skip Supabase call when not configured (offline mode).
+    // Do NOT skip when id is a number — integer PKs from Supabase are valid numbers.
+    if (!isConfigured) return
+
     try {
       await deleteRow(tableName, id)
     } catch (e) {
@@ -92,7 +94,7 @@ export function useTable(tableName, initialData = []) {
       alert(`Delete failed: ${e.message}`)
       setRows(previousRows) // revert to previous state
     }
-  }, [tableName, rows, isConfigured])
+  }, [tableName, rows])
 
   return useMemo(() => ({
     rows, setRows, loading, error, add, edit, remove, refresh,
