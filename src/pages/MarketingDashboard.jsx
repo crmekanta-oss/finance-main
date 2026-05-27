@@ -159,6 +159,22 @@ export default function MarketingDashboard({ activeModule = 'dashboard' }) {
   const totConv   = [...filteredGoogle,...filteredMeta,...filteredComm].reduce((s,r)=>s+Number(r.conversions||0),0)
   const totClicks = [...filteredGoogle,...filteredMeta,...filteredComm].reduce((s,r)=>s+Number(r.clicks||r.reach||0),0)
 
+  // Split comm rows by channel type — drives Row 2 stat cards
+  const waRows     = useMemo(() => filteredComm.filter(r => (r.type||'').toLowerCase().includes('whatsapp')), [filteredComm])
+  const emailRows  = useMemo(() => filteredComm.filter(r => (r.type||'').toLowerCase().includes('email')),    [filteredComm])
+
+  const waReach    = useMemo(() => waRows.reduce((s,r)=>s+Number(r.reach||0),0),   [waRows])
+  const waSpendDyn = useMemo(() => waRows.reduce((s,r)=>s+Number(r.spend||0),0),   [waRows])
+  const waRevDyn   = useMemo(() => waRows.reduce((s,r)=>s+Number(r.revenue||0),0), [waRows])
+
+  const emailRevDyn   = useMemo(() => emailRows.reduce((s,r)=>s+Number(r.revenue||0),0),     [emailRows])
+  const emailReachDyn = useMemo(() => emailRows.reduce((s,r)=>s+Number(r.reach||0),0),       [emailRows])
+  const emailConvDyn  = useMemo(() => emailRows.reduce((s,r)=>s+Number(r.conversions||0),0), [emailRows])
+  // Click-through rate: conversions ÷ emails sent
+  const emailCTR = emailReachDyn > 0 ? ((emailConvDyn / emailReachDyn) * 100).toFixed(1) : null
+  // Cost per WA message
+  const waCPM    = waReach > 0 ? (waSpendDyn / waReach).toFixed(2) : null
+
   const spendData = [
     { platform:'Google', spend:gSpend,    revenue:gRev    },
     { platform:'Meta',   spend:mSpend,    revenue:mRev    },
@@ -435,12 +451,16 @@ export default function MarketingDashboard({ activeModule = 'dashboard' }) {
         <StatCard icon={Users}      label="Total Reach"   value={fmtNum(totClicks)}                          change="clicks + impressions"    up={true}  accentColor="var(--green)" />
       </div>
 
-      {/* ── Row 2: Email + WhatsApp KPIs ── */}
+      {/* ── Row 2: Email + WhatsApp KPIs (live from communication_ads) ── */}
       <div style={{ display:'grid',gridTemplateColumns:'repeat(4,minmax(0,1fr))',gap:10,marginBottom:14 }}>
-        <StatCard icon={Mail}            label="Email Marketing Revenue" value={fmtCur(EMAIL_REV)}  change="28.0% open rate"     up={true}  accentColor="var(--amber)"  />
-        <StatCard icon={Eye}             label="Email Open Rate"         value="28.0%"               change="industry avg: 21%"   up={true}  accentColor="var(--green)"  />
-        <StatCard icon={MessageSquare}   label="WhatsApp Campaign Reach" value={fmtNum(13192)}       change="63.1% read rate"     up={true}  accentColor="var(--teal)"   />
-        <StatCard icon={MousePointerClick} label="WhatsApp Marketing Spend" value={fmtCur(WA_SPEND)} change="₹3.8 cost per msg"  up={true}  accentColor="var(--ceo)"    />
+        <StatCard icon={Mail}              label="Email Revenue"       value={fmtCur(emailRevDyn)}
+          change={emailRows.length > 0 ? `${emailRows.length} campaign${emailRows.length !== 1 ? 's' : ''}` : 'no email data'} up={true}  accentColor="var(--amber)"  />
+        <StatCard icon={Eye}               label="Email Click Rate"    value={emailCTR !== null ? `${emailCTR}%` : '—'}
+          change={emailCTR !== null ? `${emailConvDyn} conv. / ${fmtNum(emailReachDyn)} sent` : 'no email data'}               up={true}  accentColor="var(--green)"  />
+        <StatCard icon={MessageSquare}     label="WhatsApp Reach"      value={fmtNum(waReach)}
+          change={waRows.length > 0 ? `${waRows.length} campaign${waRows.length !== 1 ? 's' : ''}` : 'no WA data'}           up={true}  accentColor="var(--teal)"   />
+        <StatCard icon={MousePointerClick} label="WhatsApp Spend"      value={fmtCur(waSpendDyn)}
+          change={waCPM !== null ? `₹${waCPM} cost / msg` : 'no WA data'}                                                      up={true}  accentColor="var(--ceo)"    />
       </div>
 
       {/* ── Charts: Spend vs Revenue + Revenue Share ── */}
