@@ -433,25 +433,6 @@ export default function CeoDashboard({ activeModule = 'dashboard' }) {
           </div>
         </Panel>
 
-        <Panel title="AI Insights">
-          <div style={{ padding: '16px' }}>
-            <AiInsight 
-              title="Inventory Optimization" 
-              body="Based on current sales velocity, 'Silk Sarees' will be out of stock in 12 days. Recommend placing order with Raghav Textiles."
-              type="warning"
-            />
-            <AiInsight 
-              title="Marketing ROI Opportunity" 
-              body="Meta Ads ROAS is 4.2x vs Google Ads 2.8x. Shifting ₹50k budget to Meta could yield additional ₹70k revenue."
-              type="positive"
-            />
-            <AiInsight 
-              title="Sales Prediction" 
-              body="End-of-month revenue projected to hit ₹42L (↑ 8% vs target) based on historical Q2 trends."
-              type="info"
-            />
-          </div>
-        </Panel>
       </div>
 
       <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr',gap:12,marginBottom:12 }}>
