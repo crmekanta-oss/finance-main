@@ -52,7 +52,7 @@ const StatCard = ({ icon: Icon, label, value, change, up, accentColor }) => (
     <div style={{ width:38, height:38, borderRadius:10, background:`${accentColor}12`, display:'flex', alignItems:'center', justifyContent:'center', color:accentColor, marginBottom:16 }}>
       <Icon size={20} />
     </div>
-    <div style={{ fontSize:12, fontWeight:500, color:'var(--text3)', marginBottom:6 }}>{label}</div>
+    {label && <div style={{ fontSize:12, fontWeight:500, color:'var(--text3)', marginBottom:6 }}>{label}</div>}
     <div style={{ display:'flex', alignItems:'baseline', gap:8 }}>
       <div style={{ fontSize:22, fontWeight:700, color:'var(--text)', letterSpacing:'-0.01em', fontFamily:'Syne, sans-serif', textDecoration:'none', WebkitTextDecoration:'none', lineHeight:1.2 }}>{value}</div>
       <div style={{ fontSize:11, fontWeight:600, color:up?'var(--green)':'var(--red)', display:'flex', alignItems:'center' }}>
@@ -413,7 +413,7 @@ export default function CeoDashboard({ activeModule = 'dashboard' }) {
         <StatCard icon={DollarSign} label="Total Revenue"  value={fmtCur(totRevenue)} change="↑ 12.4%" up={true} accentColor="var(--ceo)" />
         <StatCard icon={TrendingUp} label="Blended ROAS"   value={`${blendRoas}×`}     change="↑ 0.8×"  up={true} accentColor="var(--green)" />
         <StatCard icon={Users}      label="Total Team"     value={team.rows.length}   change="↑ 2"     up={true} accentColor="var(--admin)" />
-        <StatCard icon={Target}     label="Portfolio IRR"  value="22.4%"               change="↑ 1.2%"  up={true} accentColor="var(--amber)" />
+        <StatCard icon={Target}     label=""               value="22.4%"               change="↑ 1.2%"  up={true} accentColor="var(--amber)" />
       </div>
 
       <div style={{ display:'grid',gridTemplateColumns:'1.6fr 1fr',gap:12,marginBottom:12 }}>
