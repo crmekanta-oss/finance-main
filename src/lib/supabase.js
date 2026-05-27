@@ -1,7 +1,9 @@
 import { createClient } from '@supabase/supabase-js'
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
+// Strip any hidden non-ASCII chars (BOM, box-drawing decorators, CRLF) that would
+// break the fetch Headers API with "non ISO-8859-1 code point" errors
+const SUPABASE_URL      = (import.meta.env.VITE_SUPABASE_URL      || '').replace(/[^\x20-\x7E]/g, '').trim()
+const SUPABASE_ANON_KEY = (import.meta.env.VITE_SUPABASE_ANON_KEY || '').replace(/[^\x20-\x7E]/g, '').trim()
 
 console.log('[Supabase] Init:', SUPABASE_URL)
 
@@ -31,7 +33,7 @@ export const supabase = createClient(
   }
 )
 
-// ── AUTH HELPERS ─────────────────────────────────────────
+// -- AUTH HELPERS -----------------------------------------
 export async function signUpTeamMember(email, password, metadata) {
   try {
     console.log('[Supabase Auth] Attempting sign up for:', email)
@@ -116,7 +118,7 @@ export async function getUserProfile(userId) {
   }
 }
 
-// ── GENERIC CRUD HELPERS ─────────────────────────────────
+// -- GENERIC CRUD HELPERS ---------------------------------
 export async function fetchAll(table) {
   try {
     const { data, error } = await supabase.from(table).select('*').order('created_at', { ascending: false })
