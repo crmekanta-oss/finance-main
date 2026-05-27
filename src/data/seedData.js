@@ -1,58 +1,85 @@
 // ── ADMIN DATA ──────────────────────────────────────────────────────────
 export const initSales = [
-  // Last 7 Days (populates Mon-Sun trend)
-  { id:1, date:'2026-05-18', client:'Fashionista Ltd',  product:'Cotton Kurta',    qty:120, amount:42000,  status:'Completed' }, // Mon
-  { id:2, date:'2026-05-19', client:'Urban Wear',        product:'Denim Jacket',   qty:60,  amount:68000,  status:'Completed' }, // Tue
-  { id:3, date:'2026-05-20', client:'Style Hub',         product:'Silk Saree',     qty:30,  amount:51000,  status:'Pending'   }, // Wed
-  { id:4, date:'2026-05-21', client:'Trend Factory',     product:'Polyester Shirt',qty:200, amount:79000,  status:'Completed' }, // Thu
-  { id:5, date:'2026-05-22', client:'Fabric World',      product:'Linen Pants',    qty:80,  amount:63000,  status:'Pending'   }, // Fri
-  { id:6, date:'2026-05-23', client:'Rajan Fabrics',     product:'Cotton Premium', qty:120, amount:88000,  status:'Completed' }, // Sat
-  { id:7, date:'2026-05-24', client:'Meena Exports',     product:'Silk Blend',     qty:80,  amount:34000,  status:'Pending'   }, // Sun
-  
-  // Today's Data (May 25)
-  { id:8, date:'2026-05-25', client:'Shobitam',          product:'Kuurtis',        qty:1,   amount:23200,  status:'Open'      },
-  { id:9, date:'2026-05-25', client:'Shobitam',          product:'Half Sarees',    qty:1,   amount:18000,  status:'Completed' },
-  
-  // Older Data (Last 30 Days)
-  { id:10,date:'2026-05-10', client:'Krishna Traders',   product:'Linen Pure',     qty:200, amount:54000,  status:'Completed' },
-  { id:11,date:'2026-05-05', client:'Priya Mills',       product:'Polyester Mix',  qty:300, amount:42000,  status:'Overdue'   },
-  { id:12,date:'2026-05-01', client:'Arjun Clothiers',   product:'Cotton Premium', qty:150, amount:48000,  status:'Completed' },
+  // Today — 27 May 2026
+  { id:1,  date:'2026-05-27', client:'Shobitam',          product:'Bridal Silk Saree',  qty:5,   amount:62500,  status:'Completed' },
+  { id:2,  date:'2026-05-27', client:'Fashionista Ltd',   product:'Cotton Kurta Set',   qty:80,  amount:44000,  status:'Completed' },
+  { id:3,  date:'2026-05-27', client:'Ethnic Trends',     product:'Half Sarees',        qty:40,  amount:28000,  status:'Pending'   },
+
+  // Last 7 Days (21–26 May)
+  { id:4,  date:'2026-05-26', client:'Urban Wear',         product:'Denim Jacket',      qty:60,  amount:68000,  status:'Completed' },
+  { id:5,  date:'2026-05-26', client:'Style Hub',          product:'Polyester Shirt',   qty:200, amount:79000,  status:'Completed' },
+  { id:6,  date:'2026-05-25', client:'Taamara Silks',      product:'Silk Saree',        qty:30,  amount:51000,  status:'Completed' },
+  { id:7,  date:'2026-05-25', client:'Shobitam',           product:'Kuurtis',           qty:60,  amount:23200,  status:'Open'      },
+  { id:8,  date:'2026-05-24', client:'Rajan Fabrics',      product:'Cotton Premium',    qty:120, amount:88000,  status:'Completed' },
+  { id:9,  date:'2026-05-23', client:'Meena Exports',      product:'Silk Blend',        qty:80,  amount:34000,  status:'Pending'   },
+  { id:10, date:'2026-05-22', client:'Fabric World',       product:'Linen Pants',       qty:80,  amount:63000,  status:'Pending'   },
+  { id:11, date:'2026-05-21', client:'Trend Factory',      product:'Polyester Mix',     qty:200, amount:79000,  status:'Completed' },
+
+  // Last 30 Days (27 Apr–20 May)
+  { id:12, date:'2026-05-18', client:'Fashionista Ltd',    product:'Cotton Kurta',      qty:120, amount:42000,  status:'Completed' },
+  { id:13, date:'2026-05-15', client:'Silk Collections',   product:'Banarasi Silk',     qty:20,  amount:74000,  status:'Completed' },
+  { id:14, date:'2026-05-12', client:'Krishna Traders',    product:'Linen Pure',        qty:200, amount:54000,  status:'Completed' },
+  { id:15, date:'2026-05-10', client:'Fashion Boutique',   product:'Party Wear',        qty:50,  amount:38500,  status:'Completed' },
+  { id:16, date:'2026-05-07', client:'Priya Mills',        product:'Polyester Mix',     qty:300, amount:42000,  status:'Overdue'   },
+  { id:17, date:'2026-05-03', client:'Arjun Clothiers',    product:'Cotton Premium',    qty:150, amount:48000,  status:'Completed' },
+  { id:18, date:'2026-04-30', client:'Website Clients',    product:'Dress Collections', qty:25,  amount:31200,  status:'Completed' },
+  { id:19, date:'2026-04-28', client:'Shobitam',           product:'Bridal Wear',       qty:8,   amount:96000,  status:'Completed' },
+
+  // Older (before 27 Apr — visible only in 'All')
+  { id:20, date:'2026-04-15', client:'Urban Wear',          product:'Denim Collection',  qty:100, amount:85000,  status:'Completed' },
+  { id:21, date:'2026-04-08', client:'Ethnic Trends',       product:'Silk Saree',        qty:45,  amount:67500,  status:'Completed' },
+  { id:22, date:'2026-03-25', client:'Fashionista Ltd',     product:'Linen Kurta',       qty:200, amount:58000,  status:'Completed' },
 ]
 
 export const initInventory = [
-  { id:1, name:'Cotton Twill 240gsm', category:'Cotton',    units:2400, unit:'metres', reorder_level:500, purchase_price:180, selling_price:450, stock_status:'In Stock', sku:'EK-CT-001', supplier_name:'Raghav Textiles' },
-  { id:2, name:'Polyester Satin',      category:'Synthetic', units:980,  unit:'metres', reorder_level:300, purchase_price:120, selling_price:320, stock_status:'Low Stock', sku:'EK-PS-002', supplier_name:'SK Yarns' },
-  { id:3, name:'Silk Organza',         category:'Silk',      units:460,  unit:'metres', reorder_level:200, purchase_price:650, selling_price:1250, stock_status:'Low Stock', sku:'EK-SO-003', supplier_name:'Mitra Fabrics' },
-  { id:4, name:'Denim Heavy 12oz',     category:'Denim',     units:1600, unit:'metres', reorder_level:400, purchase_price:210, selling_price:580, stock_status:'In Stock', sku:'EK-DH-004', supplier_name:'Loom & Co' },
-  { id:5, name:'Linen Natural',        category:'Linen',     units:120,  unit:'metres', reorder_level:300, purchase_price:290, selling_price:720, stock_status:'Critical', sku:'EK-LN-005', supplier_name:'Weave Masters' },
-  { id:6, name:'Wool Blend Fine',      category:'Wool',      units:800,  unit:'metres', reorder_level:200, purchase_price:480, selling_price:1150, stock_status:'In Stock', sku:'EK-WB-006', supplier_name:'Arjun Clothiers' },
+  { id:1,  name:'Cotton Twill 240gsm',  category:'Cotton',    units:2400, unit:'metres', reorder_level:500, purchase_price:180,  selling_price:450,  stock_status:'In Stock',  sku:'EK-CT-001', supplier_name:'Raghav Textiles' },
+  { id:2,  name:'Polyester Satin',       category:'Synthetic', units:980,  unit:'metres', reorder_level:300, purchase_price:120,  selling_price:320,  stock_status:'Low Stock', sku:'EK-PS-002', supplier_name:'SK Yarns'        },
+  { id:3,  name:'Silk Organza',          category:'Silk',      units:460,  unit:'metres', reorder_level:200, purchase_price:650,  selling_price:1250, stock_status:'Low Stock', sku:'EK-SO-003', supplier_name:'Mitra Fabrics'    },
+  { id:4,  name:'Denim Heavy 12oz',      category:'Denim',     units:1600, unit:'metres', reorder_level:400, purchase_price:210,  selling_price:580,  stock_status:'In Stock',  sku:'EK-DH-004', supplier_name:'Loom & Co'        },
+  { id:5,  name:'Linen Natural',         category:'Linen',     units:120,  unit:'metres', reorder_level:300, purchase_price:290,  selling_price:720,  stock_status:'Critical',  sku:'EK-LN-005', supplier_name:'Weave Masters'    },
+  { id:6,  name:'Wool Blend Fine',       category:'Wool',      units:800,  unit:'metres', reorder_level:200, purchase_price:480,  selling_price:1150, stock_status:'In Stock',  sku:'EK-WB-006', supplier_name:'Arjun Clothiers'  },
+  { id:7,  name:'Banarasi Brocade',      category:'Silk',      units:280,  unit:'metres', reorder_level:150, purchase_price:1200, selling_price:2800, stock_status:'In Stock',  sku:'EK-BB-007', supplier_name:'Mitra Fabrics'    },
+  { id:8,  name:'Chanderi Fabric',       category:'Cotton',    units:640,  unit:'metres', reorder_level:200, purchase_price:320,  selling_price:780,  stock_status:'In Stock',  sku:'EK-CF-008', supplier_name:'Raghav Textiles'  },
+  { id:9,  name:'Georgette Crepe',       category:'Synthetic', units:350,  unit:'metres', reorder_level:200, purchase_price:180,  selling_price:420,  stock_status:'Low Stock', sku:'EK-GC-009', supplier_name:'SK Yarns'         },
+  { id:10, name:'Pure Chiffon',          category:'Synthetic', units:0,    unit:'metres', reorder_level:250, purchase_price:145,  selling_price:380,  stock_status:'Out of Stock', sku:'EK-PC-010', supplier_name:'SK Yarns'      },
 ]
 
 export const initPayments = [
-  { id:1, supplier:'Raghav Textiles', invoice:'INV-001', total_amount:120000, paid_amount:120000, pending_amount:0, invoice_date:'2026-05-01', due:'2026-05-10', status:'Paid', payment_method:'Bank Transfer' },
-  { id:2, supplier:'Mitra Fabrics',   invoice:'INV-002', total_amount:84500,  paid_amount:0,      pending_amount:84500, invoice_date:'2026-05-10', due:'2026-05-20', status:'Pending', payment_method:'UPI' },
-  { id:3, supplier:'SK Yarns',        invoice:'INV-003', total_amount:230000, paid_amount:50000,  pending_amount:180000, invoice_date:'2026-04-15', due:'2026-04-30', status:'Overdue', payment_method:'Cheque' },
-  { id:4, supplier:'Loom & Co',       invoice:'INV-004', total_amount:67000,  paid_amount:67000,  pending_amount:0, invoice_date:'2026-05-12', due:'2026-05-22', status:'Paid', payment_method:'Bank Transfer' },
-  { id:5, supplier:'Weave Masters',   invoice:'INV-005', total_amount:95000,  paid_amount:0,      pending_amount:95000, invoice_date:'2026-05-18', due:'2026-05-28', status:'Pending', payment_method:'UPI' },
+  { id:1, supplier:'Raghav Textiles', invoice:'INV-001', total_amount:120000, paid_amount:120000, pending_amount:0,      invoice_date:'2026-05-01', due:'2026-05-10', status:'Paid',    payment_method:'Bank Transfer' },
+  { id:2, supplier:'Mitra Fabrics',   invoice:'INV-002', total_amount:84500,  paid_amount:0,      pending_amount:84500,  invoice_date:'2026-05-10', due:'2026-05-20', status:'Pending', payment_method:'UPI'           },
+  { id:3, supplier:'SK Yarns',        invoice:'INV-003', total_amount:230000, paid_amount:50000,  pending_amount:180000, invoice_date:'2026-04-15', due:'2026-04-30', status:'Overdue', payment_method:'Cheque'        },
+  { id:4, supplier:'Loom & Co',       invoice:'INV-004', total_amount:67000,  paid_amount:67000,  pending_amount:0,      invoice_date:'2026-05-12', due:'2026-05-22', status:'Paid',    payment_method:'Bank Transfer' },
+  { id:5, supplier:'Weave Masters',   invoice:'INV-005', total_amount:95000,  paid_amount:0,      pending_amount:95000,  invoice_date:'2026-05-18', due:'2026-05-28', status:'Pending', payment_method:'UPI'           },
+  { id:6, supplier:'Arjun Clothiers', invoice:'INV-006', total_amount:54000,  paid_amount:54000,  pending_amount:0,      invoice_date:'2026-05-20', due:'2026-05-27', status:'Paid',    payment_method:'Bank Transfer' },
+  { id:7, supplier:'Raghav Textiles', invoice:'INV-007', total_amount:148000, paid_amount:75000,  pending_amount:73000,  invoice_date:'2026-05-22', due:'2026-06-01', status:'Pending', payment_method:'Cheque'        },
+  { id:8, supplier:'Mitra Fabrics',   invoice:'INV-008', total_amount:310000, paid_amount:310000, pending_amount:0,      invoice_date:'2026-04-05', due:'2026-04-20', status:'Paid',    payment_method:'Bank Transfer' },
 ]
 
 export const initReceivables = [
-  // Collected (Received)
-  { id:1, client:'Fashionista Ltd', invoice:'REC-001', amount:340000, due:'2026-05-08', status:'Received' },
-  { id:2, client:'Urban Wear',       invoice:'REC-002', amount:180000, due:'2026-05-05', status:'Received' },
-  
-  // Outstanding (Pending / Overdue)
-  { id:3, client:'Style Hub',        invoice:'REC-003', amount:90500,  due:'2026-04-28', status:'Overdue'  },
-  { id:4, client:'Trend Factory',    invoice:'REC-004', amount:125000, due:'2026-05-18', status:'Pending'  },
-  { id:5, client:'Fabric World',     invoice:'REC-005', amount:67500,  due:'2026-05-25', status:'Pending'  },
-  { id:6, client:'Shobitam',          invoice:'REC-006', amount:41200,  due:'2026-05-26', status:'Pending'  },
+  // Received
+  { id:1,  client:'Fashionista Ltd',  invoice:'REC-001', amount:340000, due:'2026-05-08', status:'Received' },
+  { id:2,  client:'Urban Wear',        invoice:'REC-002', amount:180000, due:'2026-05-05', status:'Received' },
+  { id:7,  client:'Taamara Silks',     invoice:'REC-007', amount:96000,  due:'2026-05-15', status:'Received' },
+  { id:8,  client:'Silk Collections',  invoice:'REC-008', amount:74000,  due:'2026-05-20', status:'Received' },
+
+  // Pending / Overdue
+  { id:3,  client:'Style Hub',         invoice:'REC-003', amount:90500,  due:'2026-04-28', status:'Overdue'  },
+  { id:4,  client:'Trend Factory',     invoice:'REC-004', amount:125000, due:'2026-05-18', status:'Pending'  },
+  { id:5,  client:'Fabric World',      invoice:'REC-005', amount:67500,  due:'2026-05-25', status:'Pending'  },
+  { id:6,  client:'Shobitam',           invoice:'REC-006', amount:41200,  due:'2026-05-26', status:'Pending'  },
+  { id:9,  client:'Krishna Traders',   invoice:'REC-009', amount:54000,  due:'2026-05-30', status:'Pending'  },
+  { id:10, client:'Ethnic Trends',     invoice:'REC-010', amount:28000,  due:'2026-06-05', status:'Pending'  },
 ]
 
 export const initFabric = [
   { id:1, fabric:'Cotton Twill 240gsm', qty:'800 m',  supplier:'Raghav Textiles', order_date:'2026-05-01', delivery:'2026-05-15', amount:144000, status:'In Transit' },
-  { id:2, fabric:'Polyester Satin',      qty:'500 m',  supplier:'SK Yarns',        order_date:'2026-05-05', delivery:'2026-05-20', amount:60000,  status:'Ordered'    },
+  { id:2, fabric:'Polyester Satin',      qty:'500 m',  supplier:'SK Yarns',        order_date:'2026-05-05', delivery:'2026-05-20', amount:60000,  status:'Delivered'  },
   { id:3, fabric:'Silk Organza',         qty:'200 m',  supplier:'Mitra Fabrics',   order_date:'2026-05-06', delivery:'2026-05-24', amount:130000, status:'Ordered'    },
   { id:4, fabric:'Denim 12oz',           qty:'600 m',  supplier:'Loom & Co',       order_date:'2026-04-28', delivery:'2026-05-10', amount:126000, status:'Delivered'  },
+  { id:5, fabric:'Banarasi Brocade',     qty:'150 m',  supplier:'Mitra Fabrics',   order_date:'2026-05-20', delivery:'2026-06-05', amount:180000, status:'Ordered'    },
+  { id:6, fabric:'Chanderi Fabric',      qty:'400 m',  supplier:'Raghav Textiles', order_date:'2026-05-22', delivery:'2026-06-08', amount:128000, status:'Ordered'    },
+  { id:7, fabric:'Linen Natural',        qty:'300 m',  supplier:'Weave Masters',   order_date:'2026-05-15', delivery:'2026-05-28', amount:87000,  status:'In Transit' },
+  { id:8, fabric:'Pure Chiffon',         qty:'250 m',  supplier:'SK Yarns',        order_date:'2026-04-20', delivery:'2026-05-05', amount:36250,  status:'Delivered'  },
 ]
 
 export const initTeam = [
@@ -65,29 +92,71 @@ export const initTeam = [
 ]
 
 // ── MARKETING DATA ──────────────────────────────────────────────────────
-// created_at dates are set relative to today (2026-05-27) so date filters work:
-//   Today  = 2026-05-27
-//   7 Days = 2026-05-20 to 2026-05-27
-//   30 Days= 2026-04-27 to 2026-05-27
+// created_at dates spread across Today / 7 Days / 30 Days / Older
+//   Today   = 2026-05-27
+//   7 Days  = 2026-05-20 to 2026-05-27
+//   30 Days = 2026-04-27 to 2026-05-27
+//   Older   = before 2026-04-27  (only visible in 'All')
+
 export const initGoogleAds = [
-  { id:1, campaign:'Brand Search',      type:'Search',  budget:35000, spend:35000, clicks:8200,  impressions:100000, conversions:120, revenue:456000, status:'Active', created_at:'2026-05-27T09:00:00.000Z' },
-  { id:2, campaign:'Product Keywords',  type:'Search',  budget:50000, spend:45000, clicks:12400, impressions:203000, conversions:140, revenue:560000, status:'Active', created_at:'2026-05-22T10:00:00.000Z' },
-  { id:3, campaign:'Display Retarget',  type:'Display', budget:30000, spend:25000, clicks:5800,  impressions:118000, conversions:54,  revenue:162000, status:'Paused', created_at:'2026-05-10T11:00:00.000Z' },
-  { id:4, campaign:'Shopping Ads',      type:'Shopping',budget:20000, spend:15000, clicks:1600,  impressions:29000,  conversions:26,  revenue:78000,  status:'Active', created_at:'2026-04-20T08:00:00.000Z' },
+  // ── Today ──
+  { id:1,  campaign:'Brand Search',        type:'Search',   budget:35000, spend:35000, clicks:8200,  impressions:100000, conversions:120, revenue:456000, status:'Active', created_at:'2026-05-27T09:00:00.000Z' },
+  { id:5,  campaign:'YouTube Ads',         type:'Video',    budget:28000, spend:24000, clicks:3200,  impressions:182000, conversions:68,  revenue:204000, status:'Active', created_at:'2026-05-27T10:30:00.000Z' },
+
+  // ── Last 7 Days ──
+  { id:2,  campaign:'Product Keywords',    type:'Search',   budget:50000, spend:45000, clicks:12400, impressions:203000, conversions:140, revenue:560000, status:'Active', created_at:'2026-05-22T10:00:00.000Z' },
+  { id:6,  campaign:'Performance Max',     type:'Shopping', budget:40000, spend:36000, clicks:6800,  impressions:92000,  conversions:98,  revenue:294000, status:'Active', created_at:'2026-05-25T09:00:00.000Z' },
+  { id:7,  campaign:'Competitor Keywords', type:'Search',   budget:22000, spend:19500, clicks:4100,  impressions:58000,  conversions:55,  revenue:165000, status:'Active', created_at:'2026-05-23T11:00:00.000Z' },
+
+  // ── Last 30 Days ──
+  { id:3,  campaign:'Display Retarget',    type:'Display',  budget:30000, spend:25000, clicks:5800,  impressions:118000, conversions:54,  revenue:162000, status:'Paused', created_at:'2026-05-10T11:00:00.000Z' },
+  { id:8,  campaign:'Dynamic Search Ads',  type:'Search',   budget:18000, spend:16200, clicks:3900,  impressions:72000,  conversions:42,  revenue:126000, status:'Active', created_at:'2026-05-15T08:00:00.000Z' },
+  { id:9,  campaign:'Gmail Sponsored',     type:'Display',  budget:12000, spend:9800,  clicks:1200,  impressions:42000,  conversions:28,  revenue:84000,  status:'Paused', created_at:'2026-05-05T10:00:00.000Z' },
+
+  // ── Older (All only) ──
+  { id:4,  campaign:'Shopping Ads',        type:'Shopping', budget:20000, spend:15000, clicks:1600,  impressions:29000,  conversions:26,  revenue:78000,  status:'Active', created_at:'2026-04-20T08:00:00.000Z' },
+  { id:10, campaign:'Discovery Campaign',  type:'Display',  budget:25000, spend:21000, clicks:4500,  impressions:95000,  conversions:38,  revenue:114000, status:'Ended',  created_at:'2026-04-10T09:00:00.000Z' },
 ]
 
 export const initMetaAds = [
-  { id:1, campaign:'Facebook Feed',      type:'Feed',     budget:35000, spend:30000, reach:120000, impressions:180000, conversions:110, revenue:330000, status:'Active', created_at:'2026-05-27T09:30:00.000Z' },
-  { id:2, campaign:'Instagram Stories',  type:'Stories',  budget:30000, spend:25000, reach:98000,  impressions:140000, conversions:85,  revenue:255000, status:'Active', created_at:'2026-05-24T10:00:00.000Z' },
-  { id:3, campaign:'Reels Boost',        type:'Reels',    budget:20000, spend:18000, reach:92000,  impressions:128000, conversions:62,  revenue:186000, status:'Active', created_at:'2026-05-08T11:00:00.000Z' },
-  { id:4, campaign:'Lookalike Audience', type:'Audience', budget:15000, spend:12000, reach:50000,  impressions:72000,  conversions:33,  revenue:99000,  status:'Paused', created_at:'2026-04-18T08:00:00.000Z' },
+  // ── Today ──
+  { id:1,  campaign:'Facebook Feed',       type:'Feed',     budget:35000, spend:30000, reach:120000, impressions:180000, conversions:110, revenue:330000, status:'Active', created_at:'2026-05-27T09:30:00.000Z' },
+  { id:5,  campaign:'Carousel Showcase',   type:'Carousel', budget:25000, spend:22000, reach:85000,  impressions:120000, conversions:72,  revenue:216000, status:'Active', created_at:'2026-05-27T11:00:00.000Z' },
+
+  // ── Last 7 Days ──
+  { id:2,  campaign:'Instagram Stories',   type:'Stories',  budget:30000, spend:25000, reach:98000,  impressions:140000, conversions:85,  revenue:255000, status:'Active', created_at:'2026-05-24T10:00:00.000Z' },
+  { id:6,  campaign:'Collection Ads',      type:'Carousel', budget:20000, spend:17500, reach:62000,  impressions:88000,  conversions:58,  revenue:174000, status:'Active', created_at:'2026-05-26T09:00:00.000Z' },
+  { id:7,  campaign:'Reels Video Views',   type:'Reels',    budget:18000, spend:15000, reach:74000,  impressions:105000, conversions:44,  revenue:132000, status:'Active', created_at:'2026-05-22T10:00:00.000Z' },
+
+  // ── Last 30 Days ──
+  { id:3,  campaign:'Reels Boost',         type:'Reels',    budget:20000, spend:18000, reach:92000,  impressions:128000, conversions:62,  revenue:186000, status:'Active', created_at:'2026-05-08T11:00:00.000Z' },
+  { id:8,  campaign:'Lead Generation',     type:'Audience', budget:15000, spend:12800, reach:40000,  impressions:62000,  conversions:48,  revenue:144000, status:'Active', created_at:'2026-05-12T09:00:00.000Z' },
+  { id:9,  campaign:'Event Promotion',     type:'Feed',     budget:12000, spend:10500, reach:35000,  impressions:52000,  conversions:35,  revenue:105000, status:'Paused', created_at:'2026-05-03T10:00:00.000Z' },
+
+  // ── Older (All only) ──
+  { id:4,  campaign:'Lookalike Audience',  type:'Audience', budget:15000, spend:12000, reach:50000,  impressions:72000,  conversions:33,  revenue:99000,  status:'Paused', created_at:'2026-04-18T08:00:00.000Z' },
+  { id:10, campaign:'Brand Awareness',     type:'Feed',     budget:22000, spend:18500, reach:95000,  impressions:140000, conversions:28,  revenue:84000,  status:'Ended',  created_at:'2026-04-12T09:00:00.000Z' },
 ]
 
 export const initCommunicationAds = [
-  { id:1, campaign:'Eid Collection Blast', type:'WhatsApp', budget:10000, spend:7500, reach:12000, conversions:320, revenue:96000,  status:'Completed', created_at:'2026-05-27T08:00:00.000Z' },
-  { id:2, campaign:'New Arrivals SMS',     type:'SMS',      budget:5000,  spend:4200, reach:18000, conversions:180, revenue:54000,  status:'Active',    created_at:'2026-05-23T09:00:00.000Z' },
-  { id:3, campaign:'Monthly Newsletter',   type:'Email',    budget:4000,  spend:2800, reach:9500,  conversions:95,  revenue:28500,  status:'Active',    created_at:'2026-05-14T10:00:00.000Z' },
-  { id:4, campaign:'Festival Offer Alert', type:'WhatsApp', budget:8000,  spend:5500, reach:10000, conversions:410, revenue:123000, status:'Active',    created_at:'2026-05-27T11:00:00.000Z' },
+  // ── Today ──
+  { id:1,  campaign:'Eid Collection Blast',   type:'WhatsApp', budget:10000, spend:7500,  reach:12000, conversions:320, revenue:96000,  status:'Completed', created_at:'2026-05-27T08:00:00.000Z' },
+  { id:4,  campaign:'Festival Offer Alert',   type:'WhatsApp', budget:8000,  spend:5500,  reach:10000, conversions:410, revenue:123000, status:'Active',    created_at:'2026-05-27T11:00:00.000Z' },
+  { id:5,  campaign:'Summer Collection Mail', type:'Email',    budget:5000,  spend:3500,  reach:11200, conversions:142, revenue:42600,  status:'Active',    created_at:'2026-05-27T10:00:00.000Z' },
+
+  // ── Last 7 Days ──
+  { id:2,  campaign:'New Arrivals SMS',       type:'SMS',      budget:5000,  spend:4200,  reach:18000, conversions:180, revenue:54000,  status:'Active',    created_at:'2026-05-23T09:00:00.000Z' },
+  { id:6,  campaign:'Flash Sale Broadcast',   type:'WhatsApp', budget:6000,  spend:4800,  reach:8500,  conversions:285, revenue:85500,  status:'Active',    created_at:'2026-05-26T09:00:00.000Z' },
+  { id:7,  campaign:'Welcome Email Series',   type:'Email',    budget:3500,  spend:2400,  reach:6800,  conversions:68,  revenue:20400,  status:'Active',    created_at:'2026-05-21T10:00:00.000Z' },
+
+  // ── Last 30 Days ──
+  { id:3,  campaign:'Monthly Newsletter',     type:'Email',    budget:4000,  spend:2800,  reach:9500,  conversions:95,  revenue:28500,  status:'Active',    created_at:'2026-05-14T10:00:00.000Z' },
+  { id:8,  campaign:'Diwali Preview WA',      type:'WhatsApp', budget:9000,  spend:7200,  reach:15000, conversions:380, revenue:114000, status:'Completed', created_at:'2026-05-10T08:00:00.000Z' },
+  { id:9,  campaign:'Product Launch Email',   type:'Email',    budget:4500,  spend:3200,  reach:12000, conversions:120, revenue:36000,  status:'Completed', created_at:'2026-05-02T09:00:00.000Z' },
+
+  // ── Older (All only) ──
+  { id:10, campaign:'Loyalty Program Email',  type:'Email',    budget:3000,  spend:2200,  reach:7500,  conversions:75,  revenue:22500,  status:'Ended',     created_at:'2026-04-15T10:00:00.000Z' },
+  { id:11, campaign:'Ramadan Campaign WA',    type:'WhatsApp', budget:12000, spend:9500,  reach:20000, conversions:520, revenue:156000, status:'Ended',     created_at:'2026-04-05T08:00:00.000Z' },
 ]
 
 // ── CEO DATA ─────────────────────────────────────────────────────────────
