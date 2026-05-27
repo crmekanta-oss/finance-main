@@ -409,11 +409,10 @@ export default function CeoDashboard({ activeModule = 'dashboard' }) {
       </div>
 
       {/* Stats Grid */}
-      <div style={{ display:'grid', gridTemplateColumns:'repeat(4,minmax(0,1fr))', gap:12, marginBottom:12 }}>
+      <div style={{ display:'grid', gridTemplateColumns:'repeat(3,minmax(0,1fr))', gap:12, marginBottom:12 }}>
         <StatCard icon={DollarSign} label="Total Revenue"  value={fmtCur(totRevenue)} change="12.4%" up={true} accentColor="var(--ceo)" />
         <StatCard icon={TrendingUp} label="Blended ROAS"   value={`${blendRoas}×`}     change="0.8×"  up={true} accentColor="var(--green)" />
         <StatCard icon={Users}      label="Total Team"     value={team.rows.length}   change="2"     up={true} accentColor="var(--admin)" />
-        <StatCard icon={Target}     label=""               value="22.4%"               change="1.2%"  up={true} accentColor="var(--amber)" />
       </div>
 
       <div style={{ display:'grid',gridTemplateColumns:'1fr',gap:12,marginBottom:12 }}>
