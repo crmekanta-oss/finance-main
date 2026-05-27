@@ -180,32 +180,69 @@ export default function AdminDashboard({ activeModule = 'dashboard' }) {
   const filteredRecv = useMemo(() => filterRows(recv.rows, range, selectedDate), [recv.rows, range, selectedDate])
   const filteredFab = useMemo(() => filterRows(fabric.rows, range, selectedDate), [fabric.rows, range, selectedDate])
 
-  const dynamicWeeklyTrend = useMemo(() => {
-    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-    const dataMap = { 'Mon': {rev:0, ord:0, prof:0}, 'Tue': {rev:0, ord:0, prof:0}, 'Wed': {rev:0, ord:0, prof:0}, 'Thu': {rev:0, ord:0, prof:0}, 'Fri': {rev:0, ord:0, prof:0}, 'Sat': {rev:0, ord:0, prof:0}, 'Sun': {rev:0, ord:0, prof:0} }
-    
-    filteredSales.forEach(r => {
-      const d = new Date(r.date || r.created_at)
-      const dayName = days[d.getDay()]
-      if (dataMap[dayName]) {
-        dataMap[dayName].rev += Number(r.amount || 0)
-        dataMap[dayName].ord += 1
-        dataMap[dayName].prof += Number(r.amount || 0) * 0.38 // Assuming 38% margin from KPIs
-      }
-    })
-
-    const hasData = Object.values(dataMap).some(v => v.rev > 0)
-    if (!hasData && range === 'all') {
-      return salesChartData.map(d => ({ day: d.day, sales: d.sales, orders: Math.round(d.sales/1000), profit: d.sales * 0.38 }))
+  // Chart data adapts to the selected range
+  const trendData = useMemo(() => {
+    // Today / Custom — one bar per sale transaction
+    if (range === 'today' || range === 'custom') {
+      if (filteredSales.length === 0) return []
+      return filteredSales.map(r => ({
+        day:    (r.client || 'Sale').split(' ')[0],
+        sales:  Number(r.amount || 0),
+        profit: Math.floor(Number(r.amount || 0) * 0.38),
+      }))
     }
 
-    return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => ({
-      day,
-      sales: dataMap[day].rev,
-      orders: dataMap[day].ord,
-      profit: Math.floor(dataMap[day].prof)
-    }))
+    // 7 Days — one bar per actual calendar day
+    if (range === '7d') {
+      const today = new Date(); today.setHours(0,0,0,0)
+      return Array.from({ length: 7 }, (_, i) => {
+        const d = new Date(today); d.setDate(today.getDate() - (6 - i))
+        const dateStr = d.toDateString()
+        const label   = d.toLocaleDateString('en-IN', { day:'numeric', month:'short' })
+        const daySales = filteredSales.filter(r => {
+          const raw = r.date || r.created_at || ''
+          return raw && new Date(raw).toDateString() === dateStr
+        })
+        const rev = daySales.reduce((s, r) => s + Number(r.amount || 0), 0)
+        return { day: label, sales: rev, profit: Math.floor(rev * 0.38) }
+      })
+    }
+
+    // 30 Days — group into 4 weekly buckets
+    if (range === '30d') {
+      const today = new Date(); today.setHours(23,59,59,999)
+      return Array.from({ length: 4 }, (_, i) => {
+        const wEnd   = new Date(today); wEnd.setDate(today.getDate() - i * 7)
+        const wStart = new Date(wEnd);  wStart.setDate(wEnd.getDate() - 6); wStart.setHours(0,0,0,0)
+        const label  = wStart.toLocaleDateString('en-IN', { day:'numeric', month:'short' })
+        const wSales = filteredSales.filter(r => {
+          const raw = r.date || r.created_at || ''
+          if (!raw) return false
+          const d = new Date(raw)
+          return d >= wStart && d <= wEnd
+        })
+        const rev = wSales.reduce((s, r) => s + Number(r.amount || 0), 0)
+        return { day: label, sales: rev, profit: Math.floor(rev * 0.38) }
+      }).reverse()
+    }
+
+    // All — group by month in chronological order
+    const monthMap = {}; const monthOrder = []
+    filteredSales.forEach(r => {
+      const raw = r.date || r.created_at || ''; if (!raw) return
+      const key = new Date(raw).toLocaleDateString('en-IN', { month:'short', year:'2-digit' })
+      if (!monthMap[key]) { monthMap[key] = { sales:0, profit:0 }; monthOrder.push(key) }
+      monthMap[key].sales  += Number(r.amount || 0)
+      monthMap[key].profit += Math.floor(Number(r.amount || 0) * 0.38)
+    })
+    return [...new Set(monthOrder)].map(k => ({ day: k, ...monthMap[k] }))
   }, [filteredSales, range])
+
+  const trendSubtitle = range === 'today'  ? "Today's sales — by transaction"
+    : range === '7d'    ? 'Last 7 days — daily revenue'
+    : range === '30d'   ? 'Last 30 days — weekly groups'
+    : range === 'custom'? 'Selected date — transactions'
+    : 'All time — monthly revenue'
 
   const aiInsights = useMemo(() => {
     const insights = {
@@ -436,22 +473,29 @@ export default function AdminDashboard({ activeModule = 'dashboard' }) {
 
       {/* Charts row */}
       <div style={{ display:'grid', gridTemplateColumns:'1.6fr 1fr', gap:12, marginBottom:12 }}>
-        <Panel title="Revenue Trend" subtitle="Daily performance analytics">
+        <Panel title="Revenue Trend" subtitle={trendSubtitle}>
           <div style={{ padding:'12px 16px 14px' }}>
-            <ResponsiveContainer width="100%" height={168}>
-              <BarChart data={dynamicWeeklyTrend} margin={{ top:2, right:4, bottom:0, left:0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-                <XAxis dataKey="day" tick={{ fontSize:11, fill:'var(--text3)' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize:11, fill:'var(--text3)' }} axisLine={false} tickLine={false} tickFormatter={v => `₹${(v/1000).toFixed(0)}k`} width={44} />
-                <Tooltip 
-                  contentStyle={ttpStyle} 
-                  cursor={{ fill:'var(--surface2)', opacity:0.4 }} 
-                  formatter={(v, name) => [`₹${Number(v).toLocaleString('en-IN')}`, name.charAt(0).toUpperCase() + name.slice(1)]} 
-                />
-                <Bar dataKey="sales" name="revenue" fill="var(--admin)" radius={[4,4,0,0]} maxBarSize={32} animationDuration={1000} />
-                <Bar dataKey="profit" name="profit" fill="var(--green)" radius={[4,4,0,0]} maxBarSize={32} animationDuration={1200} />
-              </BarChart>
-            </ResponsiveContainer>
+            {trendData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={168}>
+                <BarChart data={trendData} margin={{ top:2, right:4, bottom:0, left:0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                  <XAxis dataKey="day" tick={{ fontSize:11, fill:'var(--text3)' }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize:11, fill:'var(--text3)' }} axisLine={false} tickLine={false} tickFormatter={v => v >= 1000 ? `₹${(v/1000).toFixed(0)}k` : `₹${v}`} width={44} />
+                  <Tooltip
+                    contentStyle={ttpStyle}
+                    cursor={{ fill:'var(--surface2)', opacity:0.4 }}
+                    formatter={(v, name) => [`₹${Number(v).toLocaleString('en-IN')}`, name === 'sales' ? 'Revenue' : 'Profit']}
+                  />
+                  <Legend wrapperStyle={{ fontSize:11, color:'var(--text2)' }} formatter={n => n === 'sales' ? 'Revenue' : 'Profit'} />
+                  <Bar dataKey="sales"  name="sales"  fill="var(--admin)" radius={[4,4,0,0]} maxBarSize={36} animationDuration={800} />
+                  <Bar dataKey="profit" name="profit" fill="var(--green)" radius={[4,4,0,0]} maxBarSize={36} animationDuration={1000} />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div style={{ height:168, display:'flex', alignItems:'center', justifyContent:'center', color:'var(--text3)', fontSize:13 }}>
+                No sales data for this period
+              </div>
+            )}
           </div>
           <div style={{ padding: '0 16px 16px', borderTop: '1px solid var(--border)' }}>
             <div style={{ marginTop: 12, display: 'flex', gap: 12, overflowX: 'auto' }} className="custom-scrollbar">
