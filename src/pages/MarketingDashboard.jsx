@@ -173,7 +173,26 @@ export default function MarketingDashboard({ activeModule = 'dashboard' }) {
   // Click-through rate: conversions ÷ emails sent
   const emailCTR = emailReachDyn > 0 ? ((emailConvDyn / emailReachDyn) * 100).toFixed(1) : null
   // Cost per WA message
-  const waCPM    = waReach > 0 ? (waSpendDyn / waReach).toFixed(2) : null
+  const waCPM  = waReach > 0 ? (waSpendDyn / waReach).toFixed(2) : null
+  const waConv = useMemo(() => waRows.reduce((s,r) => s + Number(r.conversions||0), 0), [waRows])
+  const waRoas = waSpendDyn > 0 ? (waRevDyn / waSpendDyn).toFixed(2) : null
+
+  // Per-campaign chart data — replaces static monthly trend arrays
+  const emailChartData = useMemo(() => emailRows.map(r => ({
+    name:        (r.campaign||'Campaign').split(' ').slice(0,2).join(' '),
+    sent:        Number(r.reach||0),
+    conversions: Number(r.conversions||0),
+    revenue:     Number(r.revenue||0),
+    spend:       Number(r.spend||0),
+  })), [emailRows])
+
+  const waChartData = useMemo(() => waRows.map(r => ({
+    name:        (r.campaign||'Campaign').split(' ').slice(0,2).join(' '),
+    reach:       Number(r.reach||0),
+    conversions: Number(r.conversions||0),
+    revenue:     Number(r.revenue||0),
+    spend:       Number(r.spend||0),
+  })), [waRows])
 
   const spendData = [
     { platform:'Google', spend:gSpend,    revenue:gRev    },
@@ -183,11 +202,11 @@ export default function MarketingDashboard({ activeModule = 'dashboard' }) {
     { platform:'WA',     spend:WA_SPEND,    revenue:WA_REV    },
   ]
   const donutData = [
-    { name:'Google', value:gRev,      color:'#3b82f6' },
-    { name:'Meta',   value:mRev,      color:'#a855f7' },
-    { name:'Comms',  value:cRev,      color:'#14b8a6' },
-    { name:'Email',  value:EMAIL_REV, color:'#f59e0b' },
-    { name:'WA',     value:WA_REV,    color:'#22c55e' },
+    { name:'Google', value:gRev,        color:'#3b82f6' },
+    { name:'Meta',   value:mRev,        color:'#a855f7' },
+    { name:'Comms',  value:cRev,        color:'#14b8a6' },
+    { name:'Email',  value:emailRevDyn, color:'#f59e0b' },
+    { name:'WA',     value:waRevDyn,    color:'#22c55e' },
   ].filter(d => d.value > 0)
 
   const openAdd  = key => { setEditing(null); setModal(key) }
@@ -505,32 +524,42 @@ export default function MarketingDashboard({ activeModule = 'dashboard' }) {
         </Panel>
       </div>
 
-      {/* ── Email Marketing Performance ── */}
+      {/* ── Email Marketing Performance + WhatsApp Marketing ── */}
       <div style={{ display:'grid',gridTemplateColumns:'1.5fr 1fr',gap:12,marginBottom:12 }}>
-        <Panel title="Email Marketing Performance" subtitle="Monthly — sent vs opens trend">
+        <Panel title="Email Marketing Performance"
+               subtitle={emailRows.length > 0 ? `${emailRows.length} campaign${emailRows.length !== 1 ? 's' : ''} — sent vs conversions` : 'No email campaigns for this period'}>
           <div style={{ padding:'12px 16px 14px' }}>
-            <ResponsiveContainer width="100%" height={168}>
-              <LineChart data={emailTrend}>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-                <XAxis dataKey="month" tick={{ fontSize:11,fill:'var(--text3)' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize:11,fill:'var(--text3)' }} axisLine={false} tickLine={false} tickFormatter={v=>v>=1000?`${(v/1000).toFixed(0)}k`:v} width={40} />
-                <Tooltip contentStyle={ttpStyle} />
-                <Line type="monotone" dataKey="sent"   name="Sent"   stroke="var(--amber)"  strokeWidth={2} dot={{ r:3,fill:'var(--amber)' }} />
-                <Line type="monotone" dataKey="opens"  name="Opens"  stroke="var(--green)"  strokeWidth={2} dot={{ r:3,fill:'var(--green)' }} />
-                <Legend wrapperStyle={{ fontSize:11,color:'var(--text2)' }} />
-              </LineChart>
-            </ResponsiveContainer>
+            {emailChartData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={168}>
+                <BarChart data={emailChartData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                  <XAxis dataKey="name" tick={{ fontSize:11,fill:'var(--text3)' }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize:11,fill:'var(--text3)' }} axisLine={false} tickLine={false} tickFormatter={v=>v>=1000?`${(v/1000).toFixed(0)}k`:v} width={40} />
+                  <Tooltip contentStyle={ttpStyle} />
+                  <Bar dataKey="sent"        name="Sent (Reach)" fill="var(--amber)"  radius={[4,4,0,0]} maxBarSize={28} />
+                  <Bar dataKey="conversions" name="Conversions"  fill="var(--green)"  radius={[4,4,0,0]} maxBarSize={28} />
+                  <Legend wrapperStyle={{ fontSize:11,color:'var(--text2)' }} />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div style={{ height:168,display:'flex',alignItems:'center',justifyContent:'center',color:'var(--text3)',fontSize:13 }}>
+                No email campaign data for this period
+              </div>
+            )}
           </div>
         </Panel>
-        <Panel title="WhatsApp Marketing" subtitle="Campaign delivery metrics — May 2026">
+
+        <Panel title="WhatsApp Marketing"
+               subtitle={waRows.length > 0 ? `${waRows.length} campaign${waRows.length !== 1 ? 's' : ''} — live metrics` : 'No WhatsApp campaigns for this period'}>
           <div style={{ padding:'14px 16px', display:'flex', flexDirection:'column', gap:12 }}>
             {[
-              { label:'Messages Sent',  val: fmtNum(13600), pct: null,    color:'var(--text2)' },
-              { label:'Delivered',      val: fmtNum(13192), pct:'97.0%',  color:'var(--green)' },
-              { label:'Read',           val: fmtNum(8574),  pct:'63.1%',  color:'var(--amber)' },
-              { label:'Conversions',    val: fmtNum(1286),  pct:'9.5%',   color:'var(--mkt)'   },
-              { label:'Revenue',        val: fmtCur(WA_REV),pct: null,    color:'var(--green)' },
-              { label:'Cost / Message', val:'₹0.94',        pct: null,    color:'var(--text2)' },
+              { label:'Total Campaigns',   val: fmtNum(waRows.length),   pct: null,                                                              color:'var(--text2)' },
+              { label:'Messages Sent',     val: fmtNum(waReach),         pct: null,                                                              color:'var(--text2)' },
+              { label:'Conversions',       val: fmtNum(waConv),          pct: waReach > 0 ? `${((waConv/waReach)*100).toFixed(1)}%` : null,     color:'var(--mkt)'   },
+              { label:'Revenue',           val: fmtCur(waRevDyn),        pct: null,                                                              color:'var(--green)' },
+              { label:'Total Spend',       val: fmtCur(waSpendDyn),      pct: null,                                                              color:'var(--text2)' },
+              { label:'Cost / Message',    val: waCPM  ? `₹${waCPM}`   : '—', pct: null,                                                        color:'var(--text2)' },
+              { label:'ROAS',              val: waRoas ? `${waRoas}×`   : '—', pct: null,                                                        color:'var(--green)' },
             ].map(row => (
               <div key={row.label} style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
                 <span style={{ fontSize:12, color:'var(--text2)' }}>{row.label}</span>
@@ -546,35 +575,50 @@ export default function MarketingDashboard({ activeModule = 'dashboard' }) {
         </Panel>
       </div>
 
-      {/* ── WhatsApp Trend + Email Revenue ── */}
+      {/* ── WhatsApp Campaign Chart + Email Revenue ── */}
       <div style={{ display:'grid',gridTemplateColumns:'1.5fr 1fr',gap:12,marginBottom:12 }}>
-        <Panel title="WhatsApp Campaign Trend" subtitle="Monthly — messages sent vs read">
+        <Panel title="WhatsApp Campaign Performance"
+               subtitle={waRows.length > 0 ? `${waRows.length} campaign${waRows.length !== 1 ? 's' : ''} — reach vs conversions` : 'No WhatsApp campaigns for this period'}>
           <div style={{ padding:'12px 16px 14px' }}>
-            <ResponsiveContainer width="100%" height={168}>
-              <LineChart data={waTrend}>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-                <XAxis dataKey="month" tick={{ fontSize:11,fill:'var(--text3)' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize:11,fill:'var(--text3)' }} axisLine={false} tickLine={false} tickFormatter={v=>v>=1000?`${(v/1000).toFixed(0)}k`:v} width={40} />
-                <Tooltip contentStyle={ttpStyle} />
-                <Line type="monotone" dataKey="sent" name="Sent" stroke="var(--ceo)"   strokeWidth={2} dot={{ r:3,fill:'var(--ceo)'   }} />
-                <Line type="monotone" dataKey="read" name="Read" stroke="var(--green)" strokeWidth={2} dot={{ r:3,fill:'var(--green)' }} />
-                <Legend wrapperStyle={{ fontSize:11,color:'var(--text2)' }} />
-              </LineChart>
-            </ResponsiveContainer>
+            {waChartData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={168}>
+                <BarChart data={waChartData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                  <XAxis dataKey="name" tick={{ fontSize:11,fill:'var(--text3)' }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize:11,fill:'var(--text3)' }} axisLine={false} tickLine={false} tickFormatter={v=>v>=1000?`${(v/1000).toFixed(0)}k`:v} width={40} />
+                  <Tooltip contentStyle={ttpStyle} />
+                  <Bar dataKey="reach"       name="Reach"       fill="var(--ceo)"   radius={[4,4,0,0]} maxBarSize={28} />
+                  <Bar dataKey="conversions" name="Conversions" fill="var(--green)"  radius={[4,4,0,0]} maxBarSize={28} />
+                  <Legend wrapperStyle={{ fontSize:11,color:'var(--text2)' }} />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div style={{ height:168,display:'flex',alignItems:'center',justifyContent:'center',color:'var(--text3)',fontSize:13 }}>
+                No WhatsApp campaign data for this period
+              </div>
+            )}
           </div>
         </Panel>
-        <Panel title="Email Revenue" subtitle="Monthly revenue from email campaigns">
+
+        <Panel title="Email Revenue by Campaign"
+               subtitle={emailRows.length > 0 ? `${emailRows.length} campaign${emailRows.length !== 1 ? 's' : ''}` : 'No email campaigns for this period'}>
           <div style={{ padding:'12px 16px 14px' }}>
-            <ResponsiveContainer width="100%" height={168}>
-              <BarChart data={emailTrend}>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-                <XAxis dataKey="month" tick={{ fontSize:11,fill:'var(--text3)' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize:11,fill:'var(--text3)' }} axisLine={false} tickLine={false} tickFormatter={v=>fmtCur(v)} width={48} />
-                <Tooltip contentStyle={ttpStyle} formatter={v=>[fmtCur(v)]} />
-                <Bar dataKey="revenue" name="Revenue" fill="var(--amber)" radius={[4,4,0,0]} maxBarSize={32} />
-                <Legend wrapperStyle={{ fontSize:11,color:'var(--text2)' }} />
-              </BarChart>
-            </ResponsiveContainer>
+            {emailChartData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={168}>
+                <BarChart data={emailChartData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                  <XAxis dataKey="name" tick={{ fontSize:11,fill:'var(--text3)' }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize:11,fill:'var(--text3)' }} axisLine={false} tickLine={false} tickFormatter={v=>fmtCur(v)} width={48} />
+                  <Tooltip contentStyle={ttpStyle} formatter={v=>[fmtCur(v)]} />
+                  <Bar dataKey="revenue" name="Revenue" fill="var(--amber)" radius={[4,4,0,0]} maxBarSize={32} />
+                  <Legend wrapperStyle={{ fontSize:11,color:'var(--text2)' }} />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div style={{ height:168,display:'flex',alignItems:'center',justifyContent:'center',color:'var(--text3)',fontSize:13 }}>
+                No email campaign data for this period
+              </div>
+            )}
           </div>
         </Panel>
       </div>
