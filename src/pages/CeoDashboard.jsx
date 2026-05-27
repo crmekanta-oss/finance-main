@@ -54,7 +54,7 @@ const StatCard = ({ icon: Icon, label, value, change, up, accentColor }) => (
     </div>
     <div style={{ fontSize:12, fontWeight:500, color:'var(--text3)', marginBottom:6 }}>{label}</div>
     <div style={{ display:'flex', alignItems:'baseline', gap:8 }}>
-      <div style={{ fontSize:22, fontWeight:800, color:'var(--text)', letterSpacing:'-0.03em', fontFamily:'Syne, sans-serif' }}>{value}</div>
+      <div style={{ fontSize:22, fontWeight:700, color:'var(--text)', letterSpacing:'-0.01em', fontFamily:'Syne, sans-serif', textDecoration:'none', WebkitTextDecoration:'none', lineHeight:1.2 }}>{value}</div>
       <div style={{ fontSize:11, fontWeight:600, color:up?'var(--green)':'var(--red)', display:'flex', alignItems:'center' }}>
         {up ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
         {change}
