@@ -53,7 +53,7 @@ const StatCard = ({ icon: Icon, label, value, change, up, accentColor }) => (
       <Icon size={20} />
     </div>
     {label && <div style={{ fontSize:12, fontWeight:500, color:'var(--text3)', marginBottom:6 }}>{label}</div>}
-    <div style={{ display:'flex', alignItems:'baseline', gap:8 }}>
+    <div style={{ display:'flex', alignItems:'baseline', gap:8, marginTop: label ? 0 : 22 }}>
       <div style={{ fontSize:22, fontWeight:700, color:'var(--text)', letterSpacing:'-0.01em', fontFamily:'Syne, sans-serif', textDecoration:'none', WebkitTextDecoration:'none', lineHeight:1.2 }}>{value}</div>
       <div style={{ fontSize:11, fontWeight:600, color:up?'var(--green)':'var(--red)', display:'flex', alignItems:'center' }}>
         {up ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
@@ -410,13 +410,13 @@ export default function CeoDashboard({ activeModule = 'dashboard' }) {
 
       {/* Stats Grid */}
       <div style={{ display:'grid', gridTemplateColumns:'repeat(4,minmax(0,1fr))', gap:12, marginBottom:12 }}>
-        <StatCard icon={DollarSign} label="Total Revenue"  value={fmtCur(totRevenue)} change="↑ 12.4%" up={true} accentColor="var(--ceo)" />
-        <StatCard icon={TrendingUp} label="Blended ROAS"   value={`${blendRoas}×`}     change="↑ 0.8×"  up={true} accentColor="var(--green)" />
-        <StatCard icon={Users}      label="Total Team"     value={team.rows.length}   change="↑ 2"     up={true} accentColor="var(--admin)" />
-        <StatCard icon={Target}     label=""               value="22.4%"               change="↑ 1.2%"  up={true} accentColor="var(--amber)" />
+        <StatCard icon={DollarSign} label="Total Revenue"  value={fmtCur(totRevenue)} change="12.4%" up={true} accentColor="var(--ceo)" />
+        <StatCard icon={TrendingUp} label="Blended ROAS"   value={`${blendRoas}×`}     change="0.8×"  up={true} accentColor="var(--green)" />
+        <StatCard icon={Users}      label="Total Team"     value={team.rows.length}   change="2"     up={true} accentColor="var(--admin)" />
+        <StatCard icon={Target}     label=""               value="22.4%"               change="1.2%"  up={true} accentColor="var(--amber)" />
       </div>
 
-      <div style={{ display:'grid',gridTemplateColumns:'1.6fr 1fr',gap:12,marginBottom:12 }}>
+      <div style={{ display:'grid',gridTemplateColumns:'1fr',gap:12,marginBottom:12 }}>
         <Panel title="Revenue vs Ad Spend" subtitle="Monthly — 2026">
           <div style={{ padding:'12px 16px 14px' }}>
             <ResponsiveContainer width="100%" height={168}>

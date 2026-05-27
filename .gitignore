@@ -32,3 +32,5 @@ dist-ssr
 .env.production.local
 
 vite.config.js.timestamp-*
+
+.vercel
