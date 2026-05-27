@@ -45,11 +45,7 @@ const waTrend = [
   { month:'May', sent:13600, read:8574, revenue:51000 },
 ]
 
-// Static spend figures for email + WA channels
-const EMAIL_SPEND = 18500
-const WA_SPEND    = 12800
-const EMAIL_REV   = 71000
-const WA_REV      = 51000
+// (static Email/WA spend constants removed — values now come from communication_ads rows)
 
 const ttpStyle = { background:'var(--surface2)', border:'1px solid var(--border2)', borderRadius:7, fontSize:12, color:'var(--text)', padding:'6px 10px' }
 
@@ -150,7 +146,7 @@ export default function MarketingDashboard({ activeModule = 'dashboard' }) {
   const mRev   = useMemo(() => filteredMeta.reduce((s,r)=>s+Number(r.revenue||0),0),   [filteredMeta])
   const cSpend = useMemo(() => filteredComm.reduce((s,r)=>s+Number(r.spend||0),0),     [filteredComm])
   const cRev   = useMemo(() => filteredComm.reduce((s,r)=>s+Number(r.revenue||0),0),   [filteredComm])
-  const totSpend  = gSpend + mSpend + cSpend
+  const totSpend  = gSpend + mSpend + cSpend   // cSpend already includes Email + WA + SMS rows
   const totRev    = gRev + mRev + cRev
   const blendRoas = totSpend > 0 ? (totRev/totSpend).toFixed(2) : '0.00'
   const gRoas     = gSpend  > 0 ? (gRev/gSpend).toFixed(2)    : '0.00'
@@ -167,6 +163,7 @@ export default function MarketingDashboard({ activeModule = 'dashboard' }) {
   const waSpendDyn = useMemo(() => waRows.reduce((s,r)=>s+Number(r.spend||0),0),   [waRows])
   const waRevDyn   = useMemo(() => waRows.reduce((s,r)=>s+Number(r.revenue||0),0), [waRows])
 
+  const emailSpendDyn = useMemo(() => emailRows.reduce((s,r)=>s+Number(r.spend||0),0),       [emailRows])
   const emailRevDyn   = useMemo(() => emailRows.reduce((s,r)=>s+Number(r.revenue||0),0),     [emailRows])
   const emailReachDyn = useMemo(() => emailRows.reduce((s,r)=>s+Number(r.reach||0),0),       [emailRows])
   const emailConvDyn  = useMemo(() => emailRows.reduce((s,r)=>s+Number(r.conversions||0),0), [emailRows])
@@ -195,12 +192,11 @@ export default function MarketingDashboard({ activeModule = 'dashboard' }) {
   })), [waRows])
 
   const spendData = [
-    { platform:'Google', spend:gSpend,    revenue:gRev    },
-    { platform:'Meta',   spend:mSpend,    revenue:mRev    },
-    { platform:'Comms',  spend:cSpend,    revenue:cRev    },
-    { platform:'Email',  spend:EMAIL_SPEND, revenue:EMAIL_REV },
-    { platform:'WA',     spend:WA_SPEND,    revenue:WA_REV    },
-  ]
+    { platform:'Google', spend:gSpend,        revenue:gRev        },
+    { platform:'Meta',   spend:mSpend,        revenue:mRev        },
+    { platform:'Email',  spend:emailSpendDyn, revenue:emailRevDyn },
+    { platform:'WA',     spend:waSpendDyn,    revenue:waRevDyn    },
+  ].filter(d => d.spend > 0 || d.revenue > 0)
   const donutData = [
     { name:'Google', value:gRev,        color:'#3b82f6' },
     { name:'Meta',   value:mRev,        color:'#a855f7' },
@@ -464,7 +460,7 @@ export default function MarketingDashboard({ activeModule = 'dashboard' }) {
 
       {/* ── Row 1: Paid channel KPIs ── */}
       <div style={{ display:'grid',gridTemplateColumns:'repeat(4,minmax(0,1fr))',gap:10,marginBottom:10 }}>
-        <StatCard icon={DollarSign} label="Total Ad Spend" value={fmtCur(totSpend + EMAIL_SPEND + WA_SPEND)} change="all channels"             up={true}  accentColor="var(--mkt)"   />
+        <StatCard icon={DollarSign} label="Total Ad Spend" value={fmtCur(totSpend)} change="all channels"             up={true}  accentColor="var(--mkt)"   />
         <StatCard icon={BarChart2}  label="Google Ads"    value={fmtCur(gRev)}                               change={`ROAS ${gRoas}× · spend ${fmtCur(gSpend)}`} up={true}  accentColor="var(--admin)" />
         <StatCard icon={TrendingUp} label="Meta Ads"      value={fmtCur(mRev)}                               change={`ROAS ${mRoas}× · spend ${fmtCur(mSpend)}`} up={true}  accentColor="var(--ceo)"  />
         <StatCard icon={Users}      label="Total Reach"   value={fmtNum(totClicks)}                          change="clicks + impressions"    up={true}  accentColor="var(--green)" />
