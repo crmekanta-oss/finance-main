@@ -153,6 +153,9 @@ export default function MarketingDashboard({ activeModule = 'dashboard' }) {
   const totSpend  = gSpend + mSpend + cSpend
   const totRev    = gRev + mRev + cRev
   const blendRoas = totSpend > 0 ? (totRev/totSpend).toFixed(2) : '0.00'
+  const gRoas     = gSpend  > 0 ? (gRev/gSpend).toFixed(2)    : '0.00'
+  const mRoas     = mSpend  > 0 ? (mRev/mSpend).toFixed(2)    : '0.00'
+  const cRoas     = cSpend  > 0 ? (cRev/cSpend).toFixed(2)    : '0.00'
   const totConv   = [...filteredGoogle,...filteredMeta,...filteredComm].reduce((s,r)=>s+Number(r.conversions||0),0)
   const totClicks = [...filteredGoogle,...filteredMeta,...filteredComm].reduce((s,r)=>s+Number(r.clicks||r.reach||0),0)
 
@@ -193,21 +196,21 @@ export default function MarketingDashboard({ activeModule = 'dashboard' }) {
 
   // ── Google Ads sub-page ──
   if (activeModule === 'google') {
-    const gRoas = gSpend > 0 ? (gRev/gSpend).toFixed(2) : '0'
+    const gConv = filteredGoogle.reduce((s,r)=>s+Number(r.conversions||0),0)
     return (
       <div className="fade-up">
         <div style={{ marginBottom:18 }}><h1 style={{ fontFamily:'Syne,sans-serif',fontSize:20,fontWeight:700,color:'var(--text)' }}>Google Ads</h1><p style={{ fontSize:12,color:'var(--text2)',marginTop:3 }}>Search · Display · Shopping campaigns</p></div>
         <div style={{ display:'grid',gridTemplateColumns:'repeat(3,minmax(0,1fr))',gap:10,marginBottom:14 }}>
-          <StatCard icon={DollarSign} label="Total Spend"  value={fmtCur(gSpend)} change="this period" up={true}  accentColor="var(--mkt)"   />
-          <StatCard icon={TrendingUp} label="ROAS"         value={`${gRoas}×`}    change="return on ad spend" up={true} accentColor="var(--green)" />
-          <StatCard icon={Target}     label="Conversions"  value={fmtNum(google.rows.reduce((s,r)=>s+Number(r.conversions||0),0))} change="total conversions" up={true} accentColor="var(--admin)" />
+          <StatCard icon={DollarSign} label="Total Spend"  value={fmtCur(gSpend)}   change="this period"        up={true} accentColor="var(--mkt)"   />
+          <StatCard icon={TrendingUp} label="ROAS"         value={`${gRoas}×`}       change="return on ad spend" up={true} accentColor="var(--green)" />
+          <StatCard icon={Target}     label="Conversions"  value={fmtNum(gConv)}     change="total conversions"  up={true} accentColor="var(--admin)" />
         </div>
         <Panel>
-          <DataTable columns={G_COLS} rows={google.rows} loading={google.loading}
+          <DataTable columns={G_COLS} rows={filteredGoogle} loading={google.loading}
             highlightQuery={highlight}
             onAdd={() => openAdd('google')} onEdit={row => openEdit('google', row)} onDelete={id => google.remove(id)}
-            onExportPDF={() => exportToPDF('Google Ads', G_COLS, google.rows)}
-            onExportExcel={() => exportToExcel('Google Ads', G_COLS, google.rows)} />
+            onExportPDF={() => exportToPDF('Google Ads', G_COLS, filteredGoogle)}
+            onExportExcel={() => exportToExcel('Google Ads', G_COLS, filteredGoogle)} />
         </Panel>
         {modal && <DataModal title={editing?'Edit Campaign':'Add Campaign'} schema={FORM_SCHEMAS.google_ads} initial={editing} onSave={handleSave} onClose={closeModal} />}
       </div>
@@ -216,21 +219,21 @@ export default function MarketingDashboard({ activeModule = 'dashboard' }) {
 
   // ── Meta Ads sub-page ──
   if (activeModule === 'meta') {
-    const mRoas = mSpend > 0 ? (mRev/mSpend).toFixed(2) : '0'
+    const mConv = filteredMeta.reduce((s,r)=>s+Number(r.conversions||0),0)
     return (
       <div className="fade-up">
         <div style={{ marginBottom:18 }}><h1 style={{ fontFamily:'Syne,sans-serif',fontSize:20,fontWeight:700,color:'var(--text)' }}>Meta Ads</h1><p style={{ fontSize:12,color:'var(--text2)',marginTop:3 }}>Facebook · Instagram campaigns</p></div>
         <div style={{ display:'grid',gridTemplateColumns:'repeat(3,minmax(0,1fr))',gap:10,marginBottom:14 }}>
-          <StatCard icon={DollarSign} label="Total Spend"  value={fmtCur(mSpend)} change="this period" up={true}  accentColor="var(--mkt)"   />
-          <StatCard icon={TrendingUp} label="ROAS"         value={`${mRoas}×`}    change="return on ad spend" up={true} accentColor="var(--green)" />
-          <StatCard icon={Users}      label="Conversions"  value={fmtNum(meta.rows.reduce((s,r)=>s+Number(r.conversions||0),0))} change="total conversions" up={true} accentColor="var(--ceo)" />
+          <StatCard icon={DollarSign} label="Total Spend"  value={fmtCur(mSpend)}   change="this period"        up={true} accentColor="var(--mkt)"   />
+          <StatCard icon={TrendingUp} label="ROAS"         value={`${mRoas}×`}       change="return on ad spend" up={true} accentColor="var(--green)" />
+          <StatCard icon={Users}      label="Conversions"  value={fmtNum(mConv)}     change="total conversions"  up={true} accentColor="var(--ceo)"   />
         </div>
         <Panel>
-          <DataTable columns={M_COLS} rows={meta.rows} loading={meta.loading}
+          <DataTable columns={M_COLS} rows={filteredMeta} loading={meta.loading}
             highlightQuery={highlight}
             onAdd={() => openAdd('meta')} onEdit={row => openEdit('meta', row)} onDelete={id => meta.remove(id)}
-            onExportPDF={() => exportToPDF('Meta Ads', M_COLS, meta.rows)}
-            onExportExcel={() => exportToExcel('Meta Ads', M_COLS, meta.rows)} />
+            onExportPDF={() => exportToPDF('Meta Ads', M_COLS, filteredMeta)}
+            onExportExcel={() => exportToExcel('Meta Ads', M_COLS, filteredMeta)} />
         </Panel>
         {modal && <DataModal title={editing?'Edit Campaign':'Add Campaign'} schema={FORM_SCHEMAS.meta_ads} initial={editing} onSave={handleSave} onClose={closeModal} />}
       </div>
@@ -239,22 +242,22 @@ export default function MarketingDashboard({ activeModule = 'dashboard' }) {
 
   // ── Comms sub-page ──
   if (activeModule === 'comm') {
-    const cRoas = cSpend > 0 ? (cRev/cSpend).toFixed(2) : '0'
-    const totMessages = comm.rows.reduce((s,r)=>s+Number(r.reach||0),0)
+    const totMessages = filteredComm.reduce((s,r)=>s+Number(r.reach||0),0)
+    const cConv       = filteredComm.reduce((s,r)=>s+Number(r.conversions||0),0)
     return (
       <div className="fade-up">
         <div style={{ marginBottom:18 }}><h1 style={{ fontFamily:'Syne,sans-serif',fontSize:20,fontWeight:700,color:'var(--text)' }}>Communication Ads</h1><p style={{ fontSize:12,color:'var(--text2)',marginTop:3 }}>WhatsApp · Email · SMS campaigns</p></div>
         <div style={{ display:'grid',gridTemplateColumns:'repeat(3,minmax(0,1fr))',gap:10,marginBottom:14 }}>
-          <StatCard icon={Users}      label="Messages Sent" value={fmtNum(totMessages)}  change="total reach" up={true} accentColor="var(--teal)"  />
-          <StatCard icon={TrendingUp} label="ROAS"          value={`${cRoas}×`}   change="return on ad spend"  up={true} accentColor="var(--green)" />
-          <StatCard icon={Target}     label="Conversions"   value={fmtNum(comm.rows.reduce((s,r)=>s+Number(r.conversions||0),0))}   change="total conversions" up={true} accentColor="var(--admin)" />
+          <StatCard icon={Users}      label="Messages Sent" value={fmtNum(totMessages)} change="total reach"        up={true} accentColor="var(--teal)"  />
+          <StatCard icon={TrendingUp} label="ROAS"          value={`${cRoas}×`}          change="return on ad spend" up={true} accentColor="var(--green)" />
+          <StatCard icon={Target}     label="Conversions"   value={fmtNum(cConv)}         change="total conversions"  up={true} accentColor="var(--admin)" />
         </div>
         <Panel>
-          <DataTable columns={C_COLS} rows={comm.rows} loading={comm.loading}
+          <DataTable columns={C_COLS} rows={filteredComm} loading={comm.loading}
             highlightQuery={highlight}
             onAdd={() => openAdd('comm')} onEdit={row => openEdit('comm', row)} onDelete={id => comm.remove(id)}
-            onExportPDF={() => exportToPDF('Communication Ads', C_COLS, comm.rows)}
-            onExportExcel={() => exportToExcel('Communication Ads', C_COLS, comm.rows)} />
+            onExportPDF={() => exportToPDF('Communication Ads', C_COLS, filteredComm)}
+            onExportExcel={() => exportToExcel('Communication Ads', C_COLS, filteredComm)} />
         </Panel>
         {modal === 'comm' && <DataModal title={editing?'Edit Campaign':'Add Campaign'} schema={FORM_SCHEMAS.communication_ads} initial={editing} onSave={handleSave} onClose={closeModal} />}
       </div>
@@ -426,10 +429,10 @@ export default function MarketingDashboard({ activeModule = 'dashboard' }) {
 
       {/* ── Row 1: Paid channel KPIs ── */}
       <div style={{ display:'grid',gridTemplateColumns:'repeat(4,minmax(0,1fr))',gap:10,marginBottom:10 }}>
-        <StatCard icon={DollarSign} label="Total Ad Spend"   value={fmtCur(totSpend + EMAIL_SPEND + WA_SPEND)} change="all channels"         up={true}  accentColor="var(--mkt)"   />
-        <StatCard icon={TrendingUp} label="Blended ROAS"      value={`${blendRoas}×`}                           change="avg paid channels"    up={true}  accentColor="var(--green)" />
-        <StatCard icon={Target}     label="Total Conversions" value={fmtNum(totConv)}                           change="all campaigns"        up={true}  accentColor="var(--admin)" />
-        <StatCard icon={Users}      label="Total Reach"       value={fmtNum(totClicks)}                         change="clicks + impressions" up={true}  accentColor="var(--ceo)"  />
+        <StatCard icon={DollarSign} label="Total Ad Spend" value={fmtCur(totSpend + EMAIL_SPEND + WA_SPEND)} change="all channels"             up={true}  accentColor="var(--mkt)"   />
+        <StatCard icon={BarChart2}  label="Google Ads"    value={fmtCur(gRev)}                               change={`ROAS ${gRoas}× · spend ${fmtCur(gSpend)}`} up={true}  accentColor="var(--admin)" />
+        <StatCard icon={TrendingUp} label="Meta Ads"      value={fmtCur(mRev)}                               change={`ROAS ${mRoas}× · spend ${fmtCur(mSpend)}`} up={true}  accentColor="var(--ceo)"  />
+        <StatCard icon={Users}      label="Total Reach"   value={fmtNum(totClicks)}                          change="clicks + impressions"    up={true}  accentColor="var(--green)" />
       </div>
 
       {/* ── Row 2: Email + WhatsApp KPIs ── */}
@@ -561,12 +564,16 @@ export default function MarketingDashboard({ activeModule = 'dashboard' }) {
         <Panel title="Google Ads Campaigns" subtitle={range !== 'all' ? `Filtered — ${filteredGoogle.length} record${filteredGoogle.length !== 1 ? 's' : ''}` : `${google.rows.length} total`}>
           <DataTable columns={G_COLS} rows={filteredGoogle} loading={google.loading}
             highlightQuery={highlight}
-            onAdd={() => openAdd('google')} onEdit={row => openEdit('google', row)} onDelete={id => google.remove(id)} />
+            onAdd={() => openAdd('google')} onEdit={row => openEdit('google', row)} onDelete={id => google.remove(id)}
+            onExportPDF={() => exportToPDF('Google Ads', G_COLS, filteredGoogle)}
+            onExportExcel={() => exportToExcel('Google Ads', G_COLS, filteredGoogle)} />
         </Panel>
         <Panel title="Meta Ads Campaigns" subtitle={range !== 'all' ? `Filtered — ${filteredMeta.length} record${filteredMeta.length !== 1 ? 's' : ''}` : `${meta.rows.length} total`}>
           <DataTable columns={M_COLS} rows={filteredMeta} loading={meta.loading}
             highlightQuery={highlight}
-            onAdd={() => openAdd('meta')} onEdit={row => openEdit('meta', row)} onDelete={id => meta.remove(id)} />
+            onAdd={() => openAdd('meta')} onEdit={row => openEdit('meta', row)} onDelete={id => meta.remove(id)}
+            onExportPDF={() => exportToPDF('Meta Ads', M_COLS, filteredMeta)}
+            onExportExcel={() => exportToExcel('Meta Ads', M_COLS, filteredMeta)} />
         </Panel>
       </div>
 
