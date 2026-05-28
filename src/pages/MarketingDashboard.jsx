@@ -299,14 +299,59 @@ export default function MarketingDashboard({ activeModule = 'dashboard' }) {
   if (activeModule === 'roi') {
     return (
       <div className="fade-up">
-        <div style={{ marginBottom:18 }}><h1 style={{ fontFamily:'Syne,sans-serif',fontSize:20,fontWeight:700,color:'var(--text)' }}>ROI Analytics</h1><p style={{ fontSize:12,color:'var(--text2)',marginTop:3 }}>Cross-channel return on investment analysis</p></div>
-        <div style={{ display:'grid',gridTemplateColumns:'repeat(3,minmax(0,1fr))',gap:10,marginBottom:14 }}>
-          <StatCard icon={TrendingUp} label="Blended ROAS"  value={`${blendRoas}×`}  change="all channels combined" up={true}  accentColor="var(--ceo)"   />
-          <StatCard icon={DollarSign} label="Total Spend"   value={fmtCur(totSpend)} change="Google + Meta"         up={true}  accentColor="var(--mkt)"   />
-          <StatCard icon={BarChart2}  label="Total Revenue" value={fmtCur(totRev)}   change="from ad channels"      up={true}  accentColor="var(--green)" />
+        {/* Date filter bar — same as main dashboard */}
+        <div style={{ background:'var(--surface)', border:'1px solid var(--border)', borderRadius:10, padding:'10px 14px', marginBottom:14, display:'flex', alignItems:'center', justifyContent:'space-between', position:'relative', zIndex:100 }}>
+          <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+            <div style={{ display:'flex', gap:2 }}>
+              <button onClick={handlePrevDate} style={{ width:30, height:30, borderRadius:6, border:'1px solid var(--border)', background:'transparent', color:'var(--text2)', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}><ChevronLeft size={16} /></button>
+              <button onClick={handleNextDate} style={{ width:30, height:30, borderRadius:6, border:'1px solid var(--border)', background:'transparent', color:'var(--text2)', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}><ChevronRight size={16} /></button>
+            </div>
+            <div style={{ position:'relative' }}>
+              <button onClick={() => setShowCalendar(!showCalendar)} style={{ display:'flex', alignItems:'center', gap:8, padding:'0 12px', height:32, borderRadius:8, background:range==='custom'?'rgba(99,102,241,0.12)':'var(--surface2)', border:`1px solid ${range==='custom'?'rgba(99,102,241,0.4)':'var(--border2)'}`, color:'var(--text)', fontSize:12, fontWeight:600, cursor:'pointer' }}>
+                <Calendar size={14} style={{ color:'#60a5fa' }} />
+                {selectedDate.toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })}
+                {range==='custom' && <span style={{ fontSize:10, color:'var(--mkt)', marginLeft:2 }}>●</span>}
+              </button>
+              <AnimatePresence>
+                {showCalendar && (
+                  <>
+                    <div onClick={() => setShowCalendar(false)} style={{ position:'fixed', inset:0, zIndex:9998, background:'transparent' }} />
+                    <motion.div initial={{ opacity:0, y:10, scale:0.95 }} animate={{ opacity:1, y:0, scale:1 }} exit={{ opacity:0, y:10, scale:0.95 }} transition={{ duration:0.2, ease:'easeOut' }}
+                      style={{ position:'absolute', top:'calc(100% + 8px)', left:0, zIndex:9999, background:'var(--surface2)', border:'1px solid var(--border2)', borderRadius:12, padding:10, boxShadow:'0 20px 40px rgba(0,0,0,0.6)', backdropFilter:'blur(20px)', width:220 }}>
+                      <input type="date" value={selectedDate.toISOString().split('T')[0]}
+                        onChange={e => { setSelectedDate(new Date(e.target.value)); setRange('custom'); setShowCalendar(false) }}
+                        style={{ width:'100%', padding:'8px', borderRadius:6, background:'var(--surface3)', border:'1px solid var(--border)', color:'var(--text)', fontSize:12, outline:'none' }} />
+                      <div style={{ marginTop:8, display:'grid', gridTemplateColumns:'1fr 1fr', gap:4 }}>
+                        <button onClick={() => { setSelectedDate(new Date()); setRange('today'); setShowCalendar(false) }} style={{ padding:'6px', fontSize:10, background:'var(--surface3)', border:'1px solid var(--border)', color:'var(--text2)', borderRadius:4, cursor:'pointer' }}>Today</button>
+                        <button onClick={() => setShowCalendar(false)} style={{ padding:'6px', fontSize:10, background:'var(--mkt)', border:'none', color:'#fff', borderRadius:4, cursor:'pointer' }}>Close</button>
+                      </div>
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+          <div style={{ display:'flex', gap:3 }}>
+            {RANGES.map(r => (
+              <button key={r.key} onClick={() => { setRange(r.key); if(r.key==='today') setSelectedDate(new Date()) }}
+                style={{ height:28, padding:'0 11px', borderRadius:6, cursor:'pointer', fontSize:11.5, fontWeight:500, fontFamily:'inherit', border:`1px solid ${range===r.key?'var(--border2)':'var(--border)'}`, background:range===r.key?'var(--surface2)':'transparent', color:range===r.key?'var(--text)':'var(--text2)', transition:'all 0.15s ease', boxShadow:range===r.key?'0 2px 8px rgba(139,92,246,0.2)':'none' }}>{r.label}</button>
+            ))}
+          </div>
         </div>
+
+        <div style={{ marginBottom:18 }}>
+          <h1 style={{ fontFamily:'Syne,sans-serif',fontSize:20,fontWeight:700,color:'var(--text)' }}>ROI Analytics</h1>
+          <p style={{ fontSize:12,color:'var(--text2)',marginTop:3 }}>Cross-channel return on investment analysis</p>
+        </div>
+
+        <div style={{ display:'grid',gridTemplateColumns:'repeat(3,minmax(0,1fr))',gap:10,marginBottom:14 }}>
+          <StatCard icon={TrendingUp} label="Blended ROAS"  value={totSpend > 0 ? `${blendRoas}×` : '—'}   change={totSpend > 0 ? `Google ${gRoas}× · Meta ${mRoas}×` : 'no data for period'} up={true}  accentColor="var(--ceo)"   />
+          <StatCard icon={DollarSign} label="Total Spend"   value={fmtCur(totSpend)} change={totSpend > 0 ? `Google ${fmtCur(gSpend)} · Meta ${fmtCur(mSpend)}` : 'no data for period'} up={true}  accentColor="var(--mkt)"   />
+          <StatCard icon={BarChart2}  label="Total Revenue" value={fmtCur(totRev)}   change={totRev   > 0 ? `ROAS ${blendRoas}× blended return` : 'no data for period'} up={true}  accentColor="var(--green)" />
+        </div>
+
         <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr',gap:12 }}>
-          <Panel title="ROAS Trend" subtitle="6-month view by channel">
+          <Panel title="ROAS Trend" subtitle="6-month historical by channel">
             <div style={{ padding:'12px 16px 14px' }}>
               <ResponsiveContainer width="100%" height={200}>
                 <LineChart data={roiTrend}>
@@ -314,26 +359,32 @@ export default function MarketingDashboard({ activeModule = 'dashboard' }) {
                   <XAxis dataKey="month" tick={{ fontSize:11,fill:'var(--text3)' }} axisLine={false} tickLine={false} />
                   <YAxis tick={{ fontSize:11,fill:'var(--text3)' }} axisLine={false} tickLine={false} tickFormatter={v=>`${v}×`} />
                   <Tooltip contentStyle={ttpStyle} formatter={v=>[`${v}×`]} />
-                  <Line type="monotone" dataKey="google" name="Google" stroke="var(--admin)"  strokeWidth={2} dot={{ r:3,fill:'var(--admin)'  }} />
-                  <Line type="monotone" dataKey="meta"   name="Meta"   stroke="var(--ceo)"    strokeWidth={2} dot={{ r:3,fill:'var(--ceo)'    }} />
+                  <Line type="monotone" dataKey="google" name="Google" stroke="var(--admin)" strokeWidth={2} dot={{ r:3,fill:'var(--admin)' }} />
+                  <Line type="monotone" dataKey="meta"   name="Meta"   stroke="var(--ceo)"   strokeWidth={2} dot={{ r:3,fill:'var(--ceo)'   }} />
                   <Legend wrapperStyle={{ fontSize:11,color:'var(--text2)' }} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
           </Panel>
-          <Panel title="Spend vs Revenue" subtitle="Channel comparison">
+          <Panel title="Spend vs Revenue" subtitle={spendData.length > 0 ? 'Channel comparison' : 'No campaign data for this period'}>
             <div style={{ padding:'12px 16px 14px' }}>
-              <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={spendData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-                  <XAxis dataKey="platform" tick={{ fontSize:11,fill:'var(--text3)' }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize:11,fill:'var(--text3)' }} axisLine={false} tickLine={false} tickFormatter={v=>fmtCur(v)} width={48} />
-                  <Tooltip contentStyle={ttpStyle} formatter={v=>[fmtCur(v)]} />
-                  <Bar dataKey="spend"   name="Spend"   fill="var(--mkt)"   radius={[4,4,0,0]} maxBarSize={28} />
-                  <Bar dataKey="revenue" name="Revenue" fill="var(--green)"  radius={[4,4,0,0]} maxBarSize={28} />
-                  <Legend wrapperStyle={{ fontSize:11,color:'var(--text2)' }} />
-                </BarChart>
-              </ResponsiveContainer>
+              {spendData.length > 0 ? (
+                <ResponsiveContainer width="100%" height={200}>
+                  <BarChart data={spendData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                    <XAxis dataKey="platform" tick={{ fontSize:11,fill:'var(--text3)' }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fontSize:11,fill:'var(--text3)' }} axisLine={false} tickLine={false} tickFormatter={v=>fmtCur(v)} width={48} />
+                    <Tooltip contentStyle={ttpStyle} formatter={v=>[fmtCur(v)]} />
+                    <Bar dataKey="spend"   name="Spend"   fill="var(--mkt)"   radius={[4,4,0,0]} maxBarSize={28} />
+                    <Bar dataKey="revenue" name="Revenue" fill="var(--green)" radius={[4,4,0,0]} maxBarSize={28} />
+                    <Legend wrapperStyle={{ fontSize:11,color:'var(--text2)' }} />
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <div style={{ height:200, display:'flex', alignItems:'center', justifyContent:'center', color:'var(--text3)', fontSize:13 }}>
+                  No campaign data for this period — try selecting All or 30 Days
+                </div>
+              )}
             </div>
           </Panel>
         </div>
