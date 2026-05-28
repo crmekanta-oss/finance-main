@@ -86,25 +86,17 @@ const filterRows = (rows, range, customDate) => {
 
 const AnimatedCounter = ({ value, prefix = '₹', suffix = '' }) => {
   const [displayValue, setDisplayValue] = useState(0)
-  
+
   useEffect(() => {
-    let start = 0
     const end = Number(value)
-    if (start === end) return
-    
-    let totalDuration = 1000
-    let increment = end / (totalDuration / 16)
-    
-    let timer = setInterval(() => {
+    if (end === 0) { setDisplayValue(0); return }   // always reset to 0 immediately
+    let start = 0
+    const increment = end / (1000 / 16)
+    const timer = setInterval(() => {
       start += increment
-      if (start >= end) {
-        setDisplayValue(end)
-        clearInterval(timer)
-      } else {
-        setDisplayValue(start)
-      }
+      if (start >= end) { setDisplayValue(end); clearInterval(timer) }
+      else              { setDisplayValue(start) }
     }, 16)
-    
     return () => clearInterval(timer)
   }, [value])
 
@@ -465,7 +457,7 @@ export default function AdminDashboard({ activeModule = 'dashboard' }) {
 
       {/* Stat cards */}
       <div style={{ display:'grid', gridTemplateColumns:'repeat(4,minmax(0,1fr))', gap:10, marginBottom:14 }}>
-        <StatCard icon={DollarSign}    label="Total Revenue"     value={<AnimatedCounter value={totRevenue} />} change="↑ 12.4%"        up={true}  accentColor="var(--admin)" />
+        <StatCard icon={DollarSign}    label="Total Revenue"     value={<AnimatedCounter value={totRevenue} />} change="12.4%"          up={true}  accentColor="var(--admin)" />
         <StatCard icon={ShoppingBag}   label="Active Orders"     value={<AnimatedCounter value={totOrders} prefix="" />}  change="in this period"               up={true}  accentColor="var(--green)" />
         <StatCard icon={Clock}         label="Pending Payments"  value={<AnimatedCounter value={pendingPay} />} change="to suppliers"                 up={false} accentColor="var(--amber)" />
         <StatCard icon={AlertTriangle} label="Low Stock Items"   value={<AnimatedCounter value={lowStock} prefix="" />}   change="need reorder"                 up={false} accentColor="var(--red)"   />
