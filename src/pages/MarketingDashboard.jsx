@@ -174,6 +174,32 @@ export default function MarketingDashboard({ activeModule = 'dashboard' }) {
   const waConv = useMemo(() => waRows.reduce((s,r) => s + Number(r.conversions||0), 0), [waRows])
   const waRoas = waSpendDyn > 0 ? (waRevDyn / waSpendDyn).toFixed(2) : null
 
+  // ROAS Trend — group all rows by month, compute monthly ROAS per channel
+  const roiTrendDynamic = useMemo(() => {
+    const map = {}
+    const add = (rows, channel) => {
+      rows.forEach(r => {
+        const raw = r.created_at || r.date || ''; if (!raw) return
+        const d   = new Date(raw)
+        const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`
+        const lbl = d.toLocaleDateString('en-IN', { month:'short' })
+        if (!map[key]) map[key] = { label:lbl, ts:new Date(d.getFullYear(),d.getMonth(),1).getTime(), gS:0, gR:0, mS:0, mR:0 }
+        if (channel === 'g') { map[key].gS += Number(r.spend||0); map[key].gR += Number(r.revenue||0) }
+        else                  { map[key].mS += Number(r.spend||0); map[key].mR += Number(r.revenue||0) }
+      })
+    }
+    add(google.rows, 'g')
+    add(meta.rows,   'm')
+    return Object.values(map)
+      .sort((a,b) => a.ts - b.ts)
+      .map(m => ({
+        month:  m.label,
+        google: m.gS > 0 ? Number((m.gR/m.gS).toFixed(2)) : null,
+        meta:   m.mS > 0 ? Number((m.mR/m.mS).toFixed(2)) : null,
+      }))
+      .filter(d => d.google !== null || d.meta !== null)
+  }, [google.rows, meta.rows])
+
   // Per-campaign chart data — replaces static monthly trend arrays
   const emailChartData = useMemo(() => emailRows.map(r => ({
     name:        (r.campaign||'Campaign').split(' ').slice(0,2).join(' '),
@@ -351,19 +377,25 @@ export default function MarketingDashboard({ activeModule = 'dashboard' }) {
         </div>
 
         <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr',gap:12 }}>
-          <Panel title="ROAS Trend" subtitle="6-month historical by channel">
+          <Panel title="ROAS Trend" subtitle={`${roiTrendDynamic.length > 0 ? roiTrendDynamic.length + '-month' : '6-month'} by channel — live data`}>
             <div style={{ padding:'12px 16px 14px' }}>
-              <ResponsiveContainer width="100%" height={200}>
-                <LineChart data={roiTrend}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-                  <XAxis dataKey="month" tick={{ fontSize:11,fill:'var(--text3)' }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize:11,fill:'var(--text3)' }} axisLine={false} tickLine={false} tickFormatter={v=>`${v}×`} />
-                  <Tooltip contentStyle={ttpStyle} formatter={v=>[`${v}×`]} />
-                  <Line type="monotone" dataKey="google" name="Google" stroke="var(--admin)" strokeWidth={2} dot={{ r:3,fill:'var(--admin)' }} />
-                  <Line type="monotone" dataKey="meta"   name="Meta"   stroke="var(--ceo)"   strokeWidth={2} dot={{ r:3,fill:'var(--ceo)'   }} />
-                  <Legend wrapperStyle={{ fontSize:11,color:'var(--text2)' }} />
-                </LineChart>
-              </ResponsiveContainer>
+              {roiTrendDynamic.length > 0 ? (
+                <ResponsiveContainer width="100%" height={200}>
+                  <LineChart data={roiTrendDynamic}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                    <XAxis dataKey="month" tick={{ fontSize:11,fill:'var(--text3)' }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fontSize:11,fill:'var(--text3)' }} axisLine={false} tickLine={false} tickFormatter={v=>`${v}×`} />
+                    <Tooltip contentStyle={ttpStyle} formatter={v=>[`${Number(v).toFixed(2)}×`]} />
+                    <Line type="monotone" dataKey="google" name="Google" stroke="var(--admin)" strokeWidth={2} dot={{ r:3,fill:'var(--admin)' }} connectNulls />
+                    <Line type="monotone" dataKey="meta"   name="Meta"   stroke="var(--ceo)"   strokeWidth={2} dot={{ r:3,fill:'var(--ceo)'   }} connectNulls />
+                    <Legend wrapperStyle={{ fontSize:11,color:'var(--text2)' }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              ) : (
+                <div style={{ height:200,display:'flex',alignItems:'center',justifyContent:'center',color:'var(--text3)',fontSize:13 }}>
+                  No campaign data available
+                </div>
+              )}
             </div>
           </Panel>
           <Panel title="Spend vs Revenue" subtitle={spendData.length > 0 ? 'Channel comparison' : 'No campaign data for this period'}>

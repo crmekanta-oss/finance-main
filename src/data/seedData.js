@@ -113,9 +113,15 @@ export const initGoogleAds = [
   { id:8,  campaign:'Dynamic Search Ads',  type:'Search',   budget:18000, spend:16200, clicks:3900,  impressions:72000,  conversions:42,  revenue:126000, status:'Active', created_at:'2026-05-15T08:00:00.000Z' },
   { id:9,  campaign:'Gmail Sponsored',     type:'Display',  budget:12000, spend:9800,  clicks:1200,  impressions:42000,  conversions:28,  revenue:84000,  status:'Paused', created_at:'2026-05-05T10:00:00.000Z' },
 
-  // ── Older (All only) ──
-  { id:4,  campaign:'Shopping Ads',        type:'Shopping', budget:20000, spend:15000, clicks:1600,  impressions:29000,  conversions:26,  revenue:78000,  status:'Active', created_at:'2026-04-20T08:00:00.000Z' },
-  { id:10, campaign:'Discovery Campaign',  type:'Display',  budget:25000, spend:21000, clicks:4500,  impressions:95000,  conversions:38,  revenue:114000, status:'Ended',  created_at:'2026-04-10T09:00:00.000Z' },
+  // ── Older — Apr 2026 (All only) ──
+  { id:4,  campaign:'Shopping Ads',        type:'Shopping', budget:20000, spend:15000, clicks:1600,  impressions:29000,  conversions:26,  revenue:70500,  status:'Active', created_at:'2026-04-20T08:00:00.000Z' },
+  { id:10, campaign:'Discovery Campaign',  type:'Display',  budget:25000, spend:21000, clicks:4500,  impressions:95000,  conversions:38,  revenue:99750,  status:'Ended',  created_at:'2026-04-10T09:00:00.000Z' },
+
+  // ── Historical — Dec 2025 to Mar 2026 (ROAS Trend chart source) ──
+  { id:11, campaign:'Mar Keywords Plus',   type:'Search',   budget:43000, spend:41000, clicks:10800, impressions:185000, conversions:115, revenue:188600, status:'Ended',  created_at:'2026-03-22T09:00:00.000Z' },
+  { id:12, campaign:'Feb Display Push',    type:'Display',  budget:24000, spend:22000, clicks:4800,  impressions:96000,  conversions:48,  revenue:96800,  status:'Ended',  created_at:'2026-02-18T09:00:00.000Z' },
+  { id:13, campaign:'Jan Search Drive',    type:'Search',   budget:40000, spend:38000, clicks:9200,  impressions:168000, conversions:95,  revenue:155800, status:'Ended',  created_at:'2026-01-20T09:00:00.000Z' },
+  { id:14, campaign:'Dec Brand Campaign',  type:'Search',   budget:32000, spend:30000, clicks:6800,  impressions:85000,  conversions:78,  revenue:114000, status:'Ended',  created_at:'2025-12-15T09:00:00.000Z' },
 ]
 
 export const initMetaAds = [
@@ -133,9 +139,15 @@ export const initMetaAds = [
   { id:8,  campaign:'Lead Generation',     type:'Audience', budget:15000, spend:12800, reach:40000,  impressions:62000,  conversions:48,  revenue:144000, status:'Active', created_at:'2026-05-12T09:00:00.000Z' },
   { id:9,  campaign:'Event Promotion',     type:'Feed',     budget:12000, spend:10500, reach:35000,  impressions:52000,  conversions:35,  revenue:105000, status:'Paused', created_at:'2026-05-03T10:00:00.000Z' },
 
-  // ── Older (All only) ──
-  { id:4,  campaign:'Lookalike Audience',  type:'Audience', budget:15000, spend:12000, reach:50000,  impressions:72000,  conversions:33,  revenue:99000,  status:'Paused', created_at:'2026-04-18T08:00:00.000Z' },
-  { id:10, campaign:'Brand Awareness',     type:'Feed',     budget:22000, spend:18500, reach:95000,  impressions:140000, conversions:28,  revenue:84000,  status:'Ended',  created_at:'2026-04-12T09:00:00.000Z' },
+  // ── Older — Apr 2026 (All only) ──
+  { id:4,  campaign:'Lookalike Audience',  type:'Audience', budget:15000, spend:12000, reach:50000,  impressions:72000,  conversions:33,  revenue:42000,  status:'Paused', created_at:'2026-04-18T08:00:00.000Z' },
+  { id:10, campaign:'Brand Awareness',     type:'Feed',     budget:22000, spend:18500, reach:95000,  impressions:140000, conversions:28,  revenue:64750,  status:'Ended',  created_at:'2026-04-12T09:00:00.000Z' },
+
+  // ── Historical — Dec 2025 to Mar 2026 (ROAS Trend chart source) ──
+  { id:11, campaign:'Mar Carousel Push',   type:'Carousel', budget:21000, spend:19800, reach:76000,  impressions:114000, conversions:58,  revenue:67320,  status:'Ended',  created_at:'2026-03-18T09:00:00.000Z' },
+  { id:12, campaign:'Feb Reels Drive',     type:'Reels',    budget:17000, spend:15500, reach:68000,  impressions:96000,  conversions:42,  revenue:49600,  status:'Ended',  created_at:'2026-02-22T09:00:00.000Z' },
+  { id:13, campaign:'Jan Stories Push',    type:'Stories',  budget:22000, spend:21000, reach:74000,  impressions:108000, conversions:55,  revenue:63000,  status:'Ended',  created_at:'2026-01-15T09:00:00.000Z' },
+  { id:14, campaign:'Dec FB Awareness',    type:'Feed',     budget:26000, spend:24000, reach:88000,  impressions:132000, conversions:64,  revenue:67200,  status:'Ended',  created_at:'2025-12-10T09:00:00.000Z' },
 ]
 
 export const initCommunicationAds = [
