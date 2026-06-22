@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root, [data-theme="dark"] {
+  --bg:      #080b12;
+  --surface: #0e1219;
+  --surface2:#141a24;
+  --surface3:#1c2333;
+  --card:    #0e1219;
+  --border:  rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --border3: rgba(255,255,255,0.18);
+  --text:    #dde6f8;
+  --text2:   #7b8aa6;
+  --text3:   #3e4d65;
+  --admin:   #3b82f6;
+  --mkt:     #f97316;
+  --ceo:     #a855f7;
+  --green:   #22c55e;
+  --amber:   #f59e0b;
+  --red:     #ef4444;
+  --teal:    #14b8a6;
+}
+
+[data-theme="light"] {
+  --bg:      #f1f4fb;
+  --surface: #ffffff;
+  --surface2:#f5f7fc;
+  --surface3:#edf0f8;
+  --card:    #ffffff;
+  --border:  rgba(0,0,0,0.07);
+  --border2: rgba(0,0,0,0.13);
+  --border3: rgba(0,0,0,0.20);
+  --text:    #101828;
+  --text2:   #5a6478;
+  --text3:   #9aa3b2;
+  --admin:   #2563eb;
+  --mkt:     #ea6c00;
+  --ceo:     #9333ea;
+  --green:   #16a34a;
+  --amber:   #d97706;
+  --red:     #dc2626;
+  --teal:    #0d9488;
+}
+
+html, body, #root { height: 100%; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background 0.2s, color 0.2s;
+}
+
+input, select, button, textarea {
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+button { cursor: pointer; }
+
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.35; }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.fade-up { animation: fadeUp 0.3s ease both; }
+.pulse   { animation: pulse 2s ease-in-out infinite; }
+
+.skeleton {
+  background: linear-gradient(90deg, var(--surface2) 25%, var(--surface3) 50%, var(--surface2) 75%);
+  background-size: 400px 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: 5px;
+}
+
+/* Light mode table row hover fix */
+[data-theme="light"] tr:hover td { background: var(--surface2) !important; }
